@@ -1,0 +1,63 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: EmailOctopus
+providerId: emailoctopus
+created: '2026-06-25'
+modified: '2026-06-25'
+reconciled: false
+tags:
+- Email
+- Email Marketing
+- Newsletters
+- Campaigns
+- Automation
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  The EmailOctopus v2 API enforces per-account request rate limits and returns
+  HTTP 429 when a client exceeds them. The API is also subject to the account's
+  plan-level sending quotas (monthly email volume and subscriber caps).
+  Specific per-endpoint request-per-second values are not published in the
+  public documentation and are not reconciled in this artifact.
+notes: >-
+  Verify the current request-rate limit and any Retry-After / rate-limit
+  response headers against EmailOctopus support or the API documentation during
+  reconciliation. Plan-level sending and subscriber caps are documented on the
+  pricing page.
+sources:
+- https://emailoctopus.com/api-documentation
+- https://help.emailoctopus.com/article/94-api-documentation
+- https://emailoctopus.com/pricing
+responseCodes:
+  throttled: 429
+limits:
+- name: API Requests
+  scope: account
+  metric: requests
+  limit: see provider documentation
+  notes: Per-account request rate limit on the v2 API; exceeding it returns HTTP 429.
+- name: Monthly Email Volume
+  scope: account
+  metric: emails
+  limit: plan-dependent
+  notes: Free Starter plan allows 10,000 emails per month; Pro raises this by plan.
+- name: Subscribers
+  scope: account
+  metric: subscribers
+  limit: plan-dependent
+  notes: Free Starter plan caps at 2,500 subscribers; Pro pricing scales with subscriber count.
+- name: Pagination
+  scope: request
+  metric: records
+  limit: 1000
+  notes: Collection endpoints page results via limit and starting_after cursor parameters.
+policies:
+- name: Plan-Based Limits
+  description: Sending and subscriber limits are determined by the account's plan tier.
+- name: Backoff Strategy
+  description: Clients should honor HTTP 429 responses and retry with exponential backoff.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,382 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "EmailOctopus v2 API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "List",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all lists",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/lists"
+          },
+          "docs": "Get all lists"
+        },
+        {
+          "info": {
+            "name": "Create list",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.emailoctopus.com/lists",
+            "body": {
+              "type": "json",
+              "data": "{\"name\": \"<string>\"}"
+            }
+          },
+          "docs": "Create list"
+        },
+        {
+          "info": {
+            "name": "Get list",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/lists/{list_id}"
+          },
+          "docs": "Get list"
+        },
+        {
+          "info": {
+            "name": "Update list",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/{list_id}",
+            "body": {
+              "type": "json",
+              "data": "{\"name\": \"<string>\"}"
+            }
+          },
+          "docs": "Update list"
+        },
+        {
+          "info": {
+            "name": "Delete a list",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.emailoctopus.com/lists/{list_id}"
+          },
+          "docs": "Delete a list"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Contact",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/contacts"
+          },
+          "docs": "Get contacts"
+        },
+        {
+          "info": {
+            "name": "Create contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/contacts",
+            "body": {
+              "type": "json",
+              "data": "{\"email_address\": \"<string>\", \"fields\": {}, \"tags\": {}}"
+            }
+          },
+          "docs": "Create contact"
+        },
+        {
+          "info": {
+            "name": "Create or update contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/contacts",
+            "body": {
+              "type": "json",
+              "data": "{\"email_address\": \"<string>\", \"fields\": {}, \"tags\": {}}"
+            }
+          },
+          "docs": "Create or update contact"
+        },
+        {
+          "info": {
+            "name": "Update multiple list contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/contacts/batch",
+            "body": {
+              "type": "json",
+              "data": "{\"contacts\": []}"
+            }
+          },
+          "docs": "Update multiple list contacts"
+        },
+        {
+          "info": {
+            "name": "Get contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/contacts/{contact_id}"
+          },
+          "docs": "Get contact"
+        },
+        {
+          "info": {
+            "name": "Update contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/contacts/{contact_id}",
+            "body": {
+              "type": "json",
+              "data": "{\"email_address\": \"<string>\", \"fields\": {}}"
+            }
+          },
+          "docs": "Update contact"
+        },
+        {
+          "info": {
+            "name": "Delete contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/contacts/{contact_id}"
+          },
+          "docs": "Delete contact"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Field",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create field",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/fields",
+            "body": {
+              "type": "json",
+              "data": "{\"label\": \"<string>\", \"tag\": \"<string>\", \"type\": \"text\"}"
+            }
+          },
+          "docs": "Create field"
+        },
+        {
+          "info": {
+            "name": "Update field",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/fields/{tag}",
+            "body": {
+              "type": "json",
+              "data": "{\"label\": \"<string>\"}"
+            }
+          },
+          "docs": "Update field"
+        },
+        {
+          "info": {
+            "name": "Delete field",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/fields/{tag}"
+          },
+          "docs": "Delete field"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tag",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/tags"
+          },
+          "docs": "Get all tags"
+        },
+        {
+          "info": {
+            "name": "Create tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/tags",
+            "body": {
+              "type": "json",
+              "data": "{\"tag\": \"<string>\"}"
+            }
+          },
+          "docs": "Create tag"
+        },
+        {
+          "info": {
+            "name": "Update tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/tags/{tag}",
+            "body": {
+              "type": "json",
+              "data": "{\"tag\": \"<string>\"}"
+            }
+          },
+          "docs": "Update tag"
+        },
+        {
+          "info": {
+            "name": "Delete tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.emailoctopus.com/lists/{list_id}/tags/{tag}"
+          },
+          "docs": "Delete tag"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Campaign",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all campaigns",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns"
+          },
+          "docs": "Get all campaigns"
+        },
+        {
+          "info": {
+            "name": "Get campaign",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns/{campaign_id}"
+          },
+          "docs": "Get campaign"
+        },
+        {
+          "info": {
+            "name": "Campaign contact reports",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns/{campaign_id}/reports"
+          },
+          "docs": "Campaign contact reports"
+        },
+        {
+          "info": {
+            "name": "Campaign summary report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns/{campaign_id}/reports/summary"
+          },
+          "docs": "Campaign summary report"
+        },
+        {
+          "info": {
+            "name": "Campaign links report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns/{campaign_id}/reports/links"
+          },
+          "docs": "Campaign links report"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Automation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Start an automation for a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.emailoctopus.com/automations/{automation_id}/queue",
+            "body": {
+              "type": "json",
+              "data": "{\"list_id\": \"<string>\", \"contact_id\": \"<string>\"}"
+            }
+          },
+          "docs": "Start an automation for a contact"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: EmailOctopus
+providerId: emailoctopus
+created: '2026-06-25'
+modified: '2026-06-25'
+reconciled: true
+tags:
+- Email
+- Email Marketing
+- Newsletters
+- Campaigns
+- Automation
+- Plans
+description: >-
+  EmailOctopus uses a simple two-tier model: a free Starter plan and a paid
+  Pro plan whose price scales with the number of subscribers on the account.
+  Pricing is based on list size rather than emails sent. The API is available
+  on both plans. Annual billing saves roughly 10% versus monthly, and
+  nonprofits receive a 20% lifetime discount. Accounts above 500,000
+  subscribers are quoted custom pricing.
+notes: >-
+  Pro price points are representative thresholds published on the EmailOctopus
+  pricing page; the price scales continuously with subscriber count, so verify
+  the exact figure for a given list size on the pricing page during
+  reconciliation.
+sources:
+- https://emailoctopus.com/pricing
+- https://help.emailoctopus.com/article/9-how-does-emailoctopus-pricing-work
+- https://emailoctopus.com/api-documentation
+plans:
+- id: emailoctopus-starter
+  name: Starter (Free)
+  type: free
+  description: >-
+    Free plan for up to 2,500 subscribers and 10,000 emails per month, with
+    EmailOctopus branding, 30-day report retention, one landing page, one
+    form, and a single user. Includes API access.
+  entries:
+  - label: Subscribers
+    name: subscribers
+    type: limit
+    metric: subscribers
+    limit: 2500
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0
+    userMultiplied: false
+  - label: Emails Sent
+    name: emails
+    type: limit
+    metric: emails
+    limit: 10000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0
+    userMultiplied: false
+  elements:
+  - name: Lists & Contacts
+  - name: Campaigns
+  - name: Automations
+  - name: API Access
+  - name: Landing Pages & Forms
+- id: emailoctopus-pro
+  name: Pro
+  type: paid
+  description: >-
+    Paid plan priced by subscriber count. Unlocks full design control,
+    unlimited report history, unlimited landing pages and forms, unlimited
+    users, removal of EmailOctopus branding, and priority support.
+  entries:
+  - label: Up to 500 subscribers
+    name: pro_500
+    type: subscription
+    metric: subscribers
+    limit: 500
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: from $9/month (billed yearly)
+    userMultiplied: false
+  - label: Up to 2,500 subscribers
+    name: pro_2500
+    type: subscription
+    metric: subscribers
+    limit: 2500
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: ~$20/month
+    userMultiplied: false
+  - label: Up to 5,000 subscribers
+    name: pro_5000
+    type: subscription
+    metric: subscribers
+    limit: 5000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: ~$31.50/month
+    userMultiplied: false
+  - label: Up to 10,000 subscribers
+    name: pro_10000
+    type: subscription
+    metric: subscribers
+    limit: 10000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: ~$44.50/month
+    userMultiplied: false
+  - label: Up to 50,000 subscribers
+    name: pro_50000
+    type: subscription
+    metric: subscribers
+    limit: 50000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: ~$178/month
+    userMultiplied: false
+  elements:
+  - name: Unlimited Reports History
+  - name: Unlimited Automations
+  - name: Unlimited Landing Pages & Forms
+  - name: Unlimited Users
+  - name: No EmailOctopus Branding
+  - name: Priority Support
+  - name: API Access
+- id: emailoctopus-custom
+  name: Custom
+  type: enterprise
+  description: >-
+    Custom quote for accounts above 500,000 subscribers. Contact EmailOctopus
+    for pricing.
+  entries:
+  - label: Custom Agreement
+    name: custom
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: contact for a quote
+    userMultiplied: false
+  elements:
+  - name: Custom Volume Pricing
+discounts:
+- name: Annual Billing
+  description: Roughly 10% savings versus monthly billing on the Pro plan.
+- name: Nonprofit Discount
+  description: 20% lifetime discount for registered nonprofits.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

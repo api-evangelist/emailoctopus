@@ -1,0 +1,82 @@
+aid: emailoctopus
+name: EmailOctopus
+review:
+  question: Does EmailOctopus expose a documented public WebSocket API?
+  answer: false
+  date: '2026-06-25'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was created. EmailOctopus does not document any
+    event-driven, streaming, Server-Sent Events, or WebSocket surface. The
+    platform exposes only a synchronous REST API. (Webhooks exist in the
+    product UI for integrations but are not part of the documented v2 REST
+    API surface reviewed here.)
+findings:
+  summary: |
+    EmailOctopus does not publish a documented public WebSocket API. The
+    EmailOctopus v2 API is a synchronous REST (HTTPS) API served from
+    https://api.emailoctopus.com and authenticated with a Bearer API key in
+    the Authorization header. It covers lists, contacts, custom fields, tags,
+    campaigns, automations, and campaign reports. No realtime, bidirectional,
+    or streaming WebSocket (ws:// or wss://) endpoint is documented. A legacy
+    v1.6 API remains available at https://emailoctopus.com/api/1.6 using an
+    api_key parameter; it is also REST-only.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.emailoctopus.com
+      documented: true
+    - protocol: REST
+      scheme: https
+      baseURL: https://emailoctopus.com/api/1.6
+      note: Legacy v1.6 API, api_key parameter auth. REST-only; no streaming.
+      documented: true
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in the EmailOctopus API reference as of the review date.
+  endpointsConfirmedRest:
+    - GET    https://api.emailoctopus.com/lists
+    - POST   https://api.emailoctopus.com/lists
+    - GET    https://api.emailoctopus.com/lists/{list_id}
+    - PUT    https://api.emailoctopus.com/lists/{list_id}
+    - DELETE https://api.emailoctopus.com/lists/{list_id}
+    - GET    https://api.emailoctopus.com/lists/{list_id}/contacts
+    - POST   https://api.emailoctopus.com/lists/{list_id}/contacts
+    - PUT    https://api.emailoctopus.com/lists/{list_id}/contacts
+    - PUT    https://api.emailoctopus.com/lists/{list_id}/contacts/batch
+    - GET    https://api.emailoctopus.com/lists/{list_id}/contacts/{contact_id}
+    - PUT    https://api.emailoctopus.com/lists/{list_id}/contacts/{contact_id}
+    - DELETE https://api.emailoctopus.com/lists/{list_id}/contacts/{contact_id}
+    - POST   https://api.emailoctopus.com/lists/{list_id}/fields
+    - PUT    https://api.emailoctopus.com/lists/{list_id}/fields/{tag}
+    - DELETE https://api.emailoctopus.com/lists/{list_id}/fields/{tag}
+    - GET    https://api.emailoctopus.com/lists/{list_id}/tags
+    - POST   https://api.emailoctopus.com/lists/{list_id}/tags
+    - PUT    https://api.emailoctopus.com/lists/{list_id}/tags/{tag}
+    - DELETE https://api.emailoctopus.com/lists/{list_id}/tags/{tag}
+    - GET    https://api.emailoctopus.com/campaigns
+    - GET    https://api.emailoctopus.com/campaigns/{campaign_id}
+    - GET    https://api.emailoctopus.com/campaigns/{campaign_id}/reports
+    - GET    https://api.emailoctopus.com/campaigns/{campaign_id}/reports/summary
+    - GET    https://api.emailoctopus.com/campaigns/{campaign_id}/reports/links
+    - POST   https://api.emailoctopus.com/automations/{automation_id}/queue
+sources:
+  - url: https://emailoctopus.com/api-documentation
+    type: Documentation
+    note: v2 API reference; all documented endpoints are HTTPS REST. No WebSocket mentioned.
+  - url: https://emailoctopus.com/api-documentation/v2?format=json
+    type: OpenAPI
+    note: Official v2 OpenAPI 3.1 schema; servers https://api.emailoctopus.com, Bearer (http/bearer) security scheme.
+  - url: https://help.emailoctopus.com/article/94-api-documentation
+    type: Documentation
+    note: Knowledge base API overview; REST over HTTPS.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket or streaming protocol surface exists. EmailOctopus is a
+    synchronous REST API only, so no AsyncAPI document was authored. The
+    apis.yml catalogs the six REST API surfaces (Lists, Contacts, Campaigns,
+    Tags, Automations, Reports) drawn from the official v2 OpenAPI schema.

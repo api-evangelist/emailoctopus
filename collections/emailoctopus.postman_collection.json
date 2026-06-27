@@ -1,0 +1,849 @@
+{
+  "item": [
+    {
+      "id": "9af7e0d2-9b98-48e6-8038-1f768ef41b5b",
+      "name": "List",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "bb7cbab4-3ab0-4f7e-92bd-ba3221d019e7",
+          "name": "Get all lists",
+          "request": {
+            "name": "Get all lists",
+            "description": {},
+            "url": {
+              "path": [
+                "lists"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "id": "eda67672-4188-4d98-8a51-b358461f6a61",
+          "name": "Create list",
+          "request": {
+            "name": "Create list",
+            "description": {},
+            "url": {
+              "path": [
+                "lists"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "a6303c49-e140-400e-800c-32690153cc12",
+          "name": "Get list",
+          "request": {
+            "name": "Get list",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "id": "55a90c88-7a7d-402d-8ea9-8f3a5cafc639",
+          "name": "Update list",
+          "request": {
+            "name": "Update list",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "800ad2e6-53df-4968-8a89-0ec0f1ea1e43",
+          "name": "Delete a list",
+          "request": {
+            "name": "Delete a list",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "4755db32-ba3a-45d9-8506-d4d73100b1dc",
+      "name": "Contact",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "3164f67d-7a86-45a9-8f58-131ac7d478fd",
+          "name": "Get contacts",
+          "request": {
+            "name": "Get contacts",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "contacts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "id": "38e07e00-8d7c-40d7-bae1-041f4b914c95",
+          "name": "Create contact",
+          "request": {
+            "name": "Create contact",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "contacts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email_address\": \"<string>\",\n  \"fields\": {},\n  \"tags\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "f9bd0f86-5f37-4d76-930f-158672b495a0",
+          "name": "Create or update contact",
+          "request": {
+            "name": "Create or update contact",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "contacts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email_address\": \"<string>\",\n  \"fields\": {},\n  \"tags\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "691da34c-2c72-4dbe-bb83-489b90919646",
+          "name": "Update multiple list contacts",
+          "request": {
+            "name": "Update multiple list contacts",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "contacts",
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contacts\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "3a154ece-f866-4805-9651-fea818e81046",
+          "name": "Get contact",
+          "request": {
+            "name": "Get contact",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "contacts",
+                "{{contact_id}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "id": "ebe6fd71-2cf8-49da-afea-bfe5faa2ac0f",
+          "name": "Update contact",
+          "request": {
+            "name": "Update contact",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "contacts",
+                "{{contact_id}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email_address\": \"<string>\",\n  \"fields\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "d7a725bd-a67e-470f-9e14-83c6d50ca2a9",
+          "name": "Delete contact",
+          "request": {
+            "name": "Delete contact",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "contacts",
+                "{{contact_id}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "d6c520f4-230d-4721-90c8-2d9bfa829bf9",
+      "name": "Field",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6189445a-928f-4437-bfc7-eb78f05c58a3",
+          "name": "Create field",
+          "request": {
+            "name": "Create field",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "fields"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"<string>\",\n  \"tag\": \"<string>\",\n  \"type\": \"text\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "b310cd39-e42d-493b-bf51-0ac121c3d140",
+          "name": "Update field",
+          "request": {
+            "name": "Update field",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "fields",
+                "{{tag}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "bf7ea925-b421-45ca-8848-fd4e9cddfe25",
+          "name": "Delete field",
+          "request": {
+            "name": "Delete field",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "fields",
+                "{{tag}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "ea5c5793-b99b-4e87-9fb7-b1ce6400afc9",
+      "name": "Tag",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "501a7efc-d0f5-4830-a6d8-9e4af71b35c0",
+          "name": "Get all tags",
+          "request": {
+            "name": "Get all tags",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "tags"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "id": "1da38c79-1cc4-41e8-b026-4a7d5e15f798",
+          "name": "Create tag",
+          "request": {
+            "name": "Create tag",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "tags"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tag\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "67545c98-4af3-4b74-92d2-37ce7f464645",
+          "name": "Update tag",
+          "request": {
+            "name": "Update tag",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "tags",
+                "{{tag}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tag\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "id": "5074d89e-9c09-4f76-8dc5-bf8897712c2f",
+          "name": "Delete tag",
+          "request": {
+            "name": "Delete tag",
+            "description": {},
+            "url": {
+              "path": [
+                "lists",
+                "{{list_id}}",
+                "tags",
+                "{{tag}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "e361c462-e369-470a-882d-8eed9ed1046f",
+      "name": "Campaign",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b341b874-cc54-47f4-828c-3ebf8efbeb04",
+          "name": "Get all campaigns",
+          "request": {
+            "name": "Get all campaigns",
+            "description": {},
+            "url": {
+              "path": [
+                "campaigns"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "id": "0a4b007e-59ef-4608-a1d9-1e917a1d0ac5",
+          "name": "Get campaign",
+          "request": {
+            "name": "Get campaign",
+            "description": {},
+            "url": {
+              "path": [
+                "campaigns",
+                "{{campaign_id}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "id": "b775e0fb-4173-4ef5-9e70-cb407dc57eee",
+          "name": "Campaign contact reports",
+          "request": {
+            "name": "Campaign contact reports",
+            "description": {},
+            "url": {
+              "path": [
+                "campaigns",
+                "{{campaign_id}}",
+                "reports"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "id": "317f401f-5f9a-416b-9c2e-d883b4b749da",
+          "name": "Campaign summary report",
+          "request": {
+            "name": "Campaign summary report",
+            "description": {},
+            "url": {
+              "path": [
+                "campaigns",
+                "{{campaign_id}}",
+                "reports",
+                "summary"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "id": "1cbe4b98-fe85-4129-80b1-3ff9c8ab7fd7",
+          "name": "Campaign links report",
+          "request": {
+            "name": "Campaign links report",
+            "description": {},
+            "url": {
+              "path": [
+                "campaigns",
+                "{{campaign_id}}",
+                "reports",
+                "links"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "id": "c07bfe7c-7bfe-4f26-9dd5-97f2b552324d",
+      "name": "Automation",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9b248f5f-cfc0-4f71-9aa8-80ed3eae6bbd",
+          "name": "Start an automation for a contact",
+          "request": {
+            "name": "Start an automation for a contact",
+            "description": {},
+            "url": {
+              "path": [
+                "automations",
+                "{{automation_id}}",
+                "queue"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"list_id\": \"<string>\",\n  \"contact_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "info": {
+    "_postman_id": "ae41e519-c691-4a72-b7af-3fef89acdb80",
+    "name": "EmailOctopus v2 API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The EmailOctopus v2 REST API for managing lists, contacts, fields, tags, campaigns, automations, and campaign reports.",
+      "type": "text/plain"
+    }
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.emailoctopus.com",
+      "type": "string"
+    },
+    {
+      "key": "bearerToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  }
+}

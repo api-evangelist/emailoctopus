@@ -1,0 +1,22 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: emailoctopus.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 17 15:10:46 2026 GMT
+  hsts: true
+  hsts_max_age: 63072000
+- host: api.emailoctopus.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 21 08:44:52 2026 GMT
+  hsts: null
+domains:
+- domain: emailoctopus.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject

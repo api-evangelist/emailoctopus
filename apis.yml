@@ -151,6 +151,10 @@ apis:
     reports, and per-contact activity reports (sent, opened, clicked, bounced,
     complained, unsubscribed).
 common:
+- type: DomainSecurity
+  url: security/emailoctopus-domain-security.yml
+- type: Authentication
+  url: authentication/emailoctopus-authentication.yml
 - type: LinkedIn
   url: https://www.linkedin.com/company/emailoctopus
 - type: Website

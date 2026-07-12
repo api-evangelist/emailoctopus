@@ -1,0 +1,13 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/emailoctopus-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: api_key
+  type: http
+  scheme: bearer
+  description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create
+  sources:
+  - openapi/emailoctopus-openapi.yml

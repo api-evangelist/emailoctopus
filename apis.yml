@@ -151,6 +151,8 @@ apis:
     reports, and per-contact activity reports (sent, opened, clicked, bounced,
     complained, unsubscribed).
 common:
+- type: AgenticAccess
+  url: agentic-access/emailoctopus-agentic-access.yml
 - type: DomainSecurity
   url: security/emailoctopus-domain-security.yml
 - type: Authentication

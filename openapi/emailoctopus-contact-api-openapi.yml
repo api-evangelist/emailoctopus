@@ -1,0 +1,290 @@
+openapi: 3.0.1
+info:
+  title: EmailOctopus v2 Automation Contact API
+  description: The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.
+  termsOfService: https://emailoctopus.com/terms
+  contact:
+    name: EmailOctopus Support
+    url: https://help.emailoctopus.com
+  version: '2.0'
+servers:
+- url: https://api.emailoctopus.com
+security:
+- api_key: []
+tags:
+- name: Contact
+paths:
+  /lists/{list_id}/contacts:
+    parameters:
+    - $ref: '#/components/parameters/ListId'
+    get:
+      operationId: getContacts
+      tags:
+      - Contact
+      summary: Get contacts
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/StartingAfter'
+      responses:
+        '200':
+          description: A paged collection of contacts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactCollection'
+    post:
+      operationId: createContact
+      tags:
+      - Contact
+      summary: Create contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactWrite'
+      responses:
+        '200':
+          description: The created contact.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+    put:
+      operationId: createOrUpdateContact
+      tags:
+      - Contact
+      summary: Create or update contact
+      description: Creates a contact, or updates it if a contact with the supplied email address already exists on the list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactWrite'
+      responses:
+        '200':
+          description: The created or updated contact.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+  /lists/{list_id}/contacts/batch:
+    parameters:
+    - $ref: '#/components/parameters/ListId'
+    put:
+      operationId: updateMultipleContacts
+      tags:
+      - Contact
+      summary: Update multiple list contacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - contacts
+              properties:
+                contacts:
+                  type: array
+                  description: The contacts to create or update.
+                  items:
+                    $ref: '#/components/schemas/ContactWrite'
+      responses:
+        '200':
+          description: The result of each contact operation in the batch.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        email_address:
+                          type: string
+                          example: otto@example.com
+                        status:
+                          type: string
+                          example: success
+  /lists/{list_id}/contacts/{contact_id}:
+    parameters:
+    - $ref: '#/components/parameters/ListId'
+    - $ref: '#/components/parameters/ContactId'
+    get:
+      operationId: getContact
+      tags:
+      - Contact
+      summary: Get contact
+      responses:
+        '200':
+          description: The requested contact.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+    put:
+      operationId: updateContact
+      tags:
+      - Contact
+      summary: Update contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactWrite'
+      responses:
+        '200':
+          description: The updated contact.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+    delete:
+      operationId: deleteContact
+      tags:
+      - Contact
+      summary: Delete contact
+      responses:
+        '204':
+          description: The contact was deleted.
+components:
+  parameters:
+    ListId:
+      name: list_id
+      in: path
+      required: true
+      description: The ID of the list.
+      schema:
+        type: string
+        example: 00000000-0000-0000-0000-000000000000
+    StartingAfter:
+      name: starting_after
+      in: query
+      required: false
+      description: A cursor for pagination; the ID of the last record on the previous page.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of records to return per page.
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    ContactId:
+      name: contact_id
+      in: path
+      required: true
+      description: The ID of the contact (a UUID or the MD5 hash of the lowercased email).
+      schema:
+        type: string
+        example: 00000000-0000-0000-0000-000000000000
+  schemas:
+    ContactWrite:
+      type: object
+      required:
+      - email_address
+      properties:
+        email_address:
+          type: string
+          description: The email address of the contact.
+          example: otto@example.com
+        fields:
+          type: object
+          description: Key/value pairs of field values, keyed by field tag. Pass null to remove a field from the contact.
+          additionalProperties: true
+          example:
+            referral: Otto
+            birthday: '2015-12-01'
+        tags:
+          type: object
+          description: Tags to add or remove, keyed by tag name with a boolean value (true to add, false to remove).
+          additionalProperties:
+            type: boolean
+          example:
+            vip: true
+        status:
+          type: string
+          description: The subscription status to set for the contact.
+          example: subscribed
+          enum:
+          - subscribed
+          - unsubscribed
+          - pending
+    ContactCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contact'
+        paging:
+          $ref: '#/components/schemas/Paging'
+    Contact:
+      type: object
+      description: Details of a contact of a list.
+      properties:
+        id:
+          type: string
+          description: The ID of the contact.
+          example: 00000000-0000-0000-0000-000000000000
+        email_address:
+          type: string
+          description: The email address of the contact.
+          example: otto@example.com
+        fields:
+          type: object
+          description: Key/value pairs of field values, keyed by field tag.
+          additionalProperties: true
+          example:
+            referral: Otto
+            birthday: '2015-12-01'
+        status:
+          type: string
+          description: The subscription status of the contact.
+          example: subscribed
+          enum:
+          - subscribed
+          - unsubscribed
+          - pending
+        tags:
+          type: array
+          description: Tags associated with the contact.
+          items:
+            type: string
+          example:
+          - vip
+        created_at:
+          type: string
+          format: date-time
+          example: '2024-10-07T12:00:00+00:00'
+        last_updated_at:
+          type: string
+          format: date-time
+          example: '2024-10-07T12:00:00+00:00'
+    Paging:
+      type: object
+      description: Cursor pagination metadata.
+      properties:
+        next:
+          type: string
+          nullable: true
+          description: The path to the next page of results, or null if none.
+          example: /lists?limit=100&starting_after=00000000-0000-0000-0000-000000000000
+        previous:
+          type: string
+          nullable: true
+          description: The path to the previous page of results, or null if none.
+          example: null
+  securitySchemes:
+    api_key:
+      type: http
+      scheme: bearer
+      description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create

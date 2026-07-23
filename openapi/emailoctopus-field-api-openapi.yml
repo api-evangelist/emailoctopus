@@ -1,0 +1,125 @@
+openapi: 3.0.1
+info:
+  title: EmailOctopus v2 Automation Field API
+  description: The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.
+  termsOfService: https://emailoctopus.com/terms
+  contact:
+    name: EmailOctopus Support
+    url: https://help.emailoctopus.com
+  version: '2.0'
+servers:
+- url: https://api.emailoctopus.com
+security:
+- api_key: []
+tags:
+- name: Field
+paths:
+  /lists/{list_id}/fields:
+    parameters:
+    - $ref: '#/components/parameters/ListId'
+    post:
+      operationId: createField
+      tags:
+      - Field
+      summary: Create field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Field'
+      responses:
+        '200':
+          description: The created field.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Field'
+  /lists/{list_id}/fields/{tag}:
+    parameters:
+    - $ref: '#/components/parameters/ListId'
+    - $ref: '#/components/parameters/Tag'
+    put:
+      operationId: updateField
+      tags:
+      - Field
+      summary: Update field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Field'
+      responses:
+        '200':
+          description: The updated field.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Field'
+    delete:
+      operationId: deleteField
+      tags:
+      - Field
+      summary: Delete field
+      responses:
+        '204':
+          description: The field was deleted.
+components:
+  parameters:
+    ListId:
+      name: list_id
+      in: path
+      required: true
+      description: The ID of the list.
+      schema:
+        type: string
+        example: 00000000-0000-0000-0000-000000000000
+    Tag:
+      name: tag
+      in: path
+      required: true
+      description: The tag identifier.
+      schema:
+        type: string
+        example: my tag
+  schemas:
+    Field:
+      type: object
+      properties:
+        label:
+          type: string
+          description: A human readable label for the field.
+          example: What is your hometown?
+        tag:
+          type: string
+          description: The ID used to reference the field in your emails.
+          example: Hometown
+        type:
+          type: string
+          description: The type of the field.
+          example: text
+          enum:
+          - text
+          - number
+          - date
+          - choice_single
+          - choice_multiple
+        choices:
+          type: array
+          description: An array of choices for choice fields.
+          items:
+            type: string
+          example:
+          - One
+          - Two
+        fallback:
+          type: string
+          nullable: true
+          description: A default value used in campaigns when no other value is available.
+          example: Unknown
+  securitySchemes:
+    api_key:
+      type: http
+      scheme: bearer
+      description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create

@@ -1,0 +1,152 @@
+openapi: 3.0.1
+info:
+  title: EmailOctopus v2 Automation Tag API
+  description: The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.
+  termsOfService: https://emailoctopus.com/terms
+  contact:
+    name: EmailOctopus Support
+    url: https://help.emailoctopus.com
+  version: '2.0'
+servers:
+- url: https://api.emailoctopus.com
+security:
+- api_key: []
+tags:
+- name: Tag
+paths:
+  /lists/{list_id}/tags:
+    parameters:
+    - $ref: '#/components/parameters/ListId'
+    get:
+      operationId: getAllTags
+      tags:
+      - Tag
+      summary: Get all tags
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/StartingAfter'
+      responses:
+        '200':
+          description: A paged collection of tags.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagCollection'
+    post:
+      operationId: createTag
+      tags:
+      - Tag
+      summary: Create tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          description: The created tag.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+  /lists/{list_id}/tags/{tag}:
+    parameters:
+    - $ref: '#/components/parameters/ListId'
+    - $ref: '#/components/parameters/Tag'
+    put:
+      operationId: updateTag
+      tags:
+      - Tag
+      summary: Update tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          description: The updated tag.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+    delete:
+      operationId: deleteTag
+      tags:
+      - Tag
+      summary: Delete tag
+      responses:
+        '204':
+          description: The tag was deleted.
+components:
+  parameters:
+    ListId:
+      name: list_id
+      in: path
+      required: true
+      description: The ID of the list.
+      schema:
+        type: string
+        example: 00000000-0000-0000-0000-000000000000
+    StartingAfter:
+      name: starting_after
+      in: query
+      required: false
+      description: A cursor for pagination; the ID of the last record on the previous page.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of records to return per page.
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    Tag:
+      name: tag
+      in: path
+      required: true
+      description: The tag identifier.
+      schema:
+        type: string
+        example: my tag
+  schemas:
+    Tag:
+      type: object
+      properties:
+        tag:
+          type: string
+          description: The name of the tag.
+          example: my tag
+    TagCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        paging:
+          $ref: '#/components/schemas/Paging'
+    Paging:
+      type: object
+      description: Cursor pagination metadata.
+      properties:
+        next:
+          type: string
+          nullable: true
+          description: The path to the next page of results, or null if none.
+          example: /lists?limit=100&starting_after=00000000-0000-0000-0000-000000000000
+        previous:
+          type: string
+          nullable: true
+          description: The path to the previous page of results, or null if none.
+          example: null
+  securitySchemes:
+    api_key:
+      type: http
+      scheme: bearer
+      description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create

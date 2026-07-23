@@ -1,0 +1,341 @@
+openapi: 3.0.1
+info:
+  title: EmailOctopus v2 Automation Campaign API
+  description: The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.
+  termsOfService: https://emailoctopus.com/terms
+  contact:
+    name: EmailOctopus Support
+    url: https://help.emailoctopus.com
+  version: '2.0'
+servers:
+- url: https://api.emailoctopus.com
+security:
+- api_key: []
+tags:
+- name: Campaign
+paths:
+  /campaigns:
+    get:
+      operationId: getAllCampaigns
+      tags:
+      - Campaign
+      summary: Get all campaigns
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/StartingAfter'
+      responses:
+        '200':
+          description: A paged collection of campaigns.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignCollection'
+  /campaigns/{campaign_id}:
+    parameters:
+    - $ref: '#/components/parameters/CampaignId'
+    get:
+      operationId: getCampaign
+      tags:
+      - Campaign
+      summary: Get campaign
+      responses:
+        '200':
+          description: The requested campaign.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+  /campaigns/{campaign_id}/reports/summary:
+    parameters:
+    - $ref: '#/components/parameters/CampaignId'
+    get:
+      operationId: getCampaignSummaryReport
+      tags:
+      - Campaign
+      summary: Campaign summary report
+      responses:
+        '200':
+          description: A summary report of the campaign's performance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSummaryReport'
+  /campaigns/{campaign_id}/reports/links:
+    parameters:
+    - $ref: '#/components/parameters/CampaignId'
+    get:
+      operationId: getCampaignLinksReport
+      tags:
+      - Campaign
+      summary: Campaign links report
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/StartingAfter'
+      responses:
+        '200':
+          description: A report of click activity per link in the campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          example: https://emailoctopus.com
+                        clicked:
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                              example: 110
+                            unique:
+                              type: integer
+                              example: 85
+  /campaigns/{campaign_id}/reports:
+    parameters:
+    - $ref: '#/components/parameters/CampaignId'
+    get:
+      operationId: getCampaignContactReports
+      tags:
+      - Campaign
+      summary: Campaign contact reports
+      description: Per-contact activity for a campaign. The report type (sent, opened, clicked, bounced, complained, unsubscribed, etc.) is selected via the type query parameter.
+      parameters:
+      - name: type
+        in: query
+        required: true
+        description: The type of contact report to return.
+        schema:
+          type: string
+          enum:
+          - sent
+          - opened
+          - clicked
+          - bounced
+          - complained
+          - unsubscribed
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/StartingAfter'
+      responses:
+        '200':
+          description: A paged collection of contacts for the requested report type.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contact'
+                  paging:
+                    $ref: '#/components/schemas/Paging'
+components:
+  parameters:
+    StartingAfter:
+      name: starting_after
+      in: query
+      required: false
+      description: A cursor for pagination; the ID of the last record on the previous page.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of records to return per page.
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    CampaignId:
+      name: campaign_id
+      in: path
+      required: true
+      description: The ID of the campaign.
+      schema:
+        type: string
+        example: 00000000-0000-0000-0000-000000000000
+  schemas:
+    CampaignSummaryReport:
+      type: object
+      description: A summary of a campaign's performance.
+      properties:
+        id:
+          type: string
+          example: 00000000-0000-0000-0000-000000000000
+        sent:
+          type: integer
+          description: The number of contacts that were sent to.
+          example: 200
+        bounced:
+          type: object
+          properties:
+            hard:
+              type: integer
+              example: 10
+            soft:
+              type: integer
+              example: 5
+        opened:
+          type: object
+          properties:
+            total:
+              type: integer
+              example: 110
+            unique:
+              type: integer
+              example: 85
+        clicked:
+          type: object
+          properties:
+            total:
+              type: integer
+              example: 110
+            unique:
+              type: integer
+              example: 85
+        complained:
+          type: integer
+          example: 50
+        unsubscribed:
+          type: integer
+          example: 20
+    Campaign:
+      type: object
+      description: Details of a campaign.
+      properties:
+        id:
+          type: string
+          description: The ID of the campaign.
+          example: 00000000-0000-0000-0000-000000000000
+        status:
+          type: string
+          description: The status of the campaign.
+          example: draft
+          enum:
+          - draft
+          - sending
+          - sent
+          - error
+        name:
+          type: string
+          maxLength: 255
+          description: The name of the campaign.
+          example: New clients campaign
+        subject:
+          type: string
+          maxLength: 255
+          description: The subject of the campaign.
+          example: Hello
+        to:
+          type: array
+          description: The IDs of the lists the campaign was sent to.
+          items:
+            type: string
+          example:
+          - 00000000-0000-0000-0000-000000000000
+        from:
+          type: object
+          description: The sender of the campaign.
+          properties:
+            name:
+              type: string
+              example: Otto Octopus
+            email_address:
+              type: string
+              example: otto@example.com
+        content:
+          type: object
+          description: The content of the campaign.
+          properties:
+            html:
+              type: string
+              example: <p>Hello</p>
+            plain_text:
+              type: string
+              example: Hello
+        created_at:
+          type: string
+          format: date-time
+          example: '2024-10-07T12:00:00+00:00'
+        sent_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2024-10-08T12:00:00+00:00'
+    CampaignCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Campaign'
+        paging:
+          $ref: '#/components/schemas/Paging'
+    Contact:
+      type: object
+      description: Details of a contact of a list.
+      properties:
+        id:
+          type: string
+          description: The ID of the contact.
+          example: 00000000-0000-0000-0000-000000000000
+        email_address:
+          type: string
+          description: The email address of the contact.
+          example: otto@example.com
+        fields:
+          type: object
+          description: Key/value pairs of field values, keyed by field tag.
+          additionalProperties: true
+          example:
+            referral: Otto
+            birthday: '2015-12-01'
+        status:
+          type: string
+          description: The subscription status of the contact.
+          example: subscribed
+          enum:
+          - subscribed
+          - unsubscribed
+          - pending
+        tags:
+          type: array
+          description: Tags associated with the contact.
+          items:
+            type: string
+          example:
+          - vip
+        created_at:
+          type: string
+          format: date-time
+          example: '2024-10-07T12:00:00+00:00'
+        last_updated_at:
+          type: string
+          format: date-time
+          example: '2024-10-07T12:00:00+00:00'
+    Paging:
+      type: object
+      description: Cursor pagination metadata.
+      properties:
+        next:
+          type: string
+          nullable: true
+          description: The path to the next page of results, or null if none.
+          example: /lists?limit=100&starting_after=00000000-0000-0000-0000-000000000000
+        previous:
+          type: string
+          nullable: true
+          description: The path to the previous page of results, or null if none.
+          example: null
+  securitySchemes:
+    api_key:
+      type: http
+      scheme: bearer
+      description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create

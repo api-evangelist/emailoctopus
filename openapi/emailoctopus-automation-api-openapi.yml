@@ -1,0 +1,57 @@
+openapi: 3.0.1
+info:
+  title: EmailOctopus v2 Automation API
+  description: The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.
+  termsOfService: https://emailoctopus.com/terms
+  contact:
+    name: EmailOctopus Support
+    url: https://help.emailoctopus.com
+  version: '2.0'
+servers:
+- url: https://api.emailoctopus.com
+security:
+- api_key: []
+tags:
+- name: Automation
+paths:
+  /automations/{automation_id}/queue:
+    parameters:
+    - name: automation_id
+      in: path
+      required: true
+      description: The ID of the automation.
+      schema:
+        type: string
+        example: 00000000-0000-0000-0000-000000000000
+    post:
+      operationId: startAutomation
+      tags:
+      - Automation
+      summary: Start an automation for a contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - list_id
+              - contact_id
+              properties:
+                list_id:
+                  type: string
+                  description: The ID of the list the contact belongs to.
+                  example: 00000000-0000-0000-0000-000000000000
+                contact_id:
+                  type: string
+                  description: The ID of the contact to enter into the automation.
+                  example: 00000000-0000-0000-0000-000000000000
+      responses:
+        '202':
+          description: The contact was queued into the automation.
+components:
+  securitySchemes:
+    api_key:
+      type: http
+      scheme: bearer
+      description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create

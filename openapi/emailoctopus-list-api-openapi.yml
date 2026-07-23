@@ -1,0 +1,233 @@
+openapi: 3.0.1
+info:
+  title: EmailOctopus v2 Automation List API
+  description: The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.
+  termsOfService: https://emailoctopus.com/terms
+  contact:
+    name: EmailOctopus Support
+    url: https://help.emailoctopus.com
+  version: '2.0'
+servers:
+- url: https://api.emailoctopus.com
+security:
+- api_key: []
+tags:
+- name: List
+paths:
+  /lists:
+    get:
+      operationId: getAllLists
+      tags:
+      - List
+      summary: Get all lists
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/StartingAfter'
+      responses:
+        '200':
+          description: A paged collection of lists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCollection'
+    post:
+      operationId: createList
+      tags:
+      - List
+      summary: Create list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                  description: The name of the list.
+                  example: New clients list
+      responses:
+        '200':
+          description: The created list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+  /lists/{list_id}:
+    parameters:
+    - $ref: '#/components/parameters/ListId'
+    get:
+      operationId: getList
+      tags:
+      - List
+      summary: Get list
+      responses:
+        '200':
+          description: The requested list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+    put:
+      operationId: updateList
+      tags:
+      - List
+      summary: Update list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                  description: The name of the list.
+                  example: New clients list
+      responses:
+        '200':
+          description: The updated list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+    delete:
+      operationId: deleteList
+      tags:
+      - List
+      summary: Delete a list
+      responses:
+        '204':
+          description: The list was deleted.
+components:
+  parameters:
+    ListId:
+      name: list_id
+      in: path
+      required: true
+      description: The ID of the list.
+      schema:
+        type: string
+        example: 00000000-0000-0000-0000-000000000000
+    StartingAfter:
+      name: starting_after
+      in: query
+      required: false
+      description: A cursor for pagination; the ID of the last record on the previous page.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: The maximum number of records to return per page.
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+  schemas:
+    List:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the list.
+          example: 00000000-0000-0000-0000-000000000000
+        name:
+          type: string
+          maxLength: 255
+          description: The name of the list.
+          example: New clients list
+        double_opt_in:
+          type: boolean
+          description: If double opt-in has been enabled on the list.
+          example: false
+        fields:
+          type: array
+          description: The custom fields available on the list.
+          items:
+            $ref: '#/components/schemas/Field'
+        counts:
+          type: object
+          description: Contact counts by status.
+          properties:
+            pending:
+              type: integer
+              example: 1
+            subscribed:
+              type: integer
+              example: 10
+            unsubscribed:
+              type: integer
+              example: 2
+        created_at:
+          type: string
+          format: date-time
+          description: When the list was created, in ISO 8601 format.
+          example: '2024-10-07T12:00:00+00:00'
+    ListCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/List'
+        paging:
+          $ref: '#/components/schemas/Paging'
+    Field:
+      type: object
+      properties:
+        label:
+          type: string
+          description: A human readable label for the field.
+          example: What is your hometown?
+        tag:
+          type: string
+          description: The ID used to reference the field in your emails.
+          example: Hometown
+        type:
+          type: string
+          description: The type of the field.
+          example: text
+          enum:
+          - text
+          - number
+          - date
+          - choice_single
+          - choice_multiple
+        choices:
+          type: array
+          description: An array of choices for choice fields.
+          items:
+            type: string
+          example:
+          - One
+          - Two
+        fallback:
+          type: string
+          nullable: true
+          description: A default value used in campaigns when no other value is available.
+          example: Unknown
+    Paging:
+      type: object
+      description: Cursor pagination metadata.
+      properties:
+        next:
+          type: string
+          nullable: true
+          description: The path to the next page of results, or null if none.
+          example: /lists?limit=100&starting_after=00000000-0000-0000-0000-000000000000
+        previous:
+          type: string
+          nullable: true
+          description: The path to the previous page of results, or null if none.
+          example: null
+  securitySchemes:
+    api_key:
+      type: http
+      scheme: bearer
+      description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create

@@ -7,7 +7,20 @@ description: EmailOctopus is an affordable email-marketing platform for newslett
   https://api.emailoctopus.com, Bearer authenticated) lets developers manage lists,
   contacts, custom fields, tags, campaigns, automations, and campaign reports
   programmatically.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/emailoctopus.png
 tags:
 - Email
 - Email Marketing
@@ -18,138 +31,138 @@ created: '2026-06-25'
 modified: '2026-06-25'
 specificationVersion: '0.19'
 apis:
-- aid: emailoctopus:emailoctopus-lists-api
-  name: EmailOctopus Lists API
-  tags:
-  - Lists
-  - Audiences
-  - Fields
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+- aid: emailoctopus:emailoctopus-automation-api
+  name: EmailOctopus Automation API
+  description: The Automation API from EmailOctopus — 1 operation(s) for automation.
   humanURL: https://emailoctopus.com/api-documentation/lists
   baseURL: https://api.emailoctopus.com
-  properties:
-  - url: https://emailoctopus.com/api-documentation/lists
-    type: Documentation
-  - url: https://emailoctopus.com/api-documentation
-    type: APIReference
-  - url: openapi/emailoctopus-openapi.yml
-    type: OpenAPI
-  - url: collections/emailoctopus.postman_collection.json
-    type: PostmanCollection
-  - url: collections/emailoctopus.opencollection.json
-    type: OpenCollection
-  description: Create, read, update, and delete subscriber lists, plus manage the
-    custom fields (text, number, date, choice) defined on each list.
-- aid: emailoctopus:emailoctopus-contacts-api
-  name: EmailOctopus Contacts API
   tags:
-  - Contacts
-  - Subscribers
-  - CRUD
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  - Automation
+  properties:
+  - type: OpenAPI
+    url: openapi/emailoctopus-automation-api-openapi.yml
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/lists
+  - type: APIReference
+    url: https://emailoctopus.com/api-documentation
+  - type: PostmanCollection
+    url: collections/emailoctopus.postman_collection.json
+  - type: OpenCollection
+    url: collections/emailoctopus.opencollection.json
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/campaigns
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/automations/queue
+- aid: emailoctopus:emailoctopus-campaign-api
+  name: EmailOctopus Campaign API
+  description: The Campaign API from EmailOctopus — 5 operation(s) for campaign.
   humanURL: https://emailoctopus.com/api-documentation/lists
   baseURL: https://api.emailoctopus.com
-  properties:
-  - url: https://emailoctopus.com/api-documentation/lists
-    type: Documentation
-  - url: https://emailoctopus.com/api-documentation
-    type: APIReference
-  - url: openapi/emailoctopus-openapi.yml
-    type: OpenAPI
-  - url: collections/emailoctopus.postman_collection.json
-    type: PostmanCollection
-  - url: collections/emailoctopus.opencollection.json
-    type: OpenCollection
-  description: Create, create-or-update, get, update, delete, and batch-update
-    contacts within a list, including their field values and tag assignments.
-- aid: emailoctopus:emailoctopus-campaigns-api
-  name: EmailOctopus Campaigns API
   tags:
-  - Campaigns
-  - Email
-  - Sending
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://emailoctopus.com/api-documentation/campaigns
-  baseURL: https://api.emailoctopus.com
+  - Campaign
   properties:
-  - url: https://emailoctopus.com/api-documentation/campaigns
-    type: Documentation
-  - url: https://emailoctopus.com/api-documentation
-    type: APIReference
-  - url: openapi/emailoctopus-openapi.yml
-    type: OpenAPI
-  - url: collections/emailoctopus.postman_collection.json
-    type: PostmanCollection
-  - url: collections/emailoctopus.opencollection.json
-    type: OpenCollection
-  description: Retrieve a single campaign or list all campaigns with status, subject,
-    sender, content, and timestamps.
-- aid: emailoctopus:emailoctopus-tags-api
-  name: EmailOctopus Tags API
-  tags:
-  - Tags
-  - Segmentation
-  - Lists
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  - type: OpenAPI
+    url: openapi/emailoctopus-campaign-api-openapi.yml
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/lists
+  - type: APIReference
+    url: https://emailoctopus.com/api-documentation
+  - type: PostmanCollection
+    url: collections/emailoctopus.postman_collection.json
+  - type: OpenCollection
+    url: collections/emailoctopus.opencollection.json
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/campaigns
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/automations/queue
+- aid: emailoctopus:emailoctopus-contact-api
+  name: EmailOctopus Contact API
+  description: The Contact API from EmailOctopus — 3 operation(s) for contact.
   humanURL: https://emailoctopus.com/api-documentation/lists
   baseURL: https://api.emailoctopus.com
-  properties:
-  - url: https://emailoctopus.com/api-documentation/lists
-    type: Documentation
-  - url: https://emailoctopus.com/api-documentation
-    type: APIReference
-  - url: openapi/emailoctopus-openapi.yml
-    type: OpenAPI
-  - url: collections/emailoctopus.postman_collection.json
-    type: PostmanCollection
-  - url: collections/emailoctopus.opencollection.json
-    type: OpenCollection
-  description: List, create, rename, and delete the tags used to segment contacts
-    within a list.
-- aid: emailoctopus:emailoctopus-automations-api
-  name: EmailOctopus Automations API
   tags:
-  - Automations
-  - Workflows
-  - Triggers
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://emailoctopus.com/api-documentation/automations/queue
-  baseURL: https://api.emailoctopus.com
+  - Contact
   properties:
-  - url: https://emailoctopus.com/api-documentation/automations/queue
-    type: Documentation
-  - url: https://emailoctopus.com/api-documentation
-    type: APIReference
-  - url: openapi/emailoctopus-openapi.yml
-    type: OpenAPI
-  - url: collections/emailoctopus.postman_collection.json
-    type: PostmanCollection
-  - url: collections/emailoctopus.opencollection.json
-    type: OpenCollection
-  description: Start (queue) an automation workflow for a specific contact on a list.
-- aid: emailoctopus:emailoctopus-reports-api
-  name: EmailOctopus Reports API
+  - type: OpenAPI
+    url: openapi/emailoctopus-contact-api-openapi.yml
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/lists
+  - type: APIReference
+    url: https://emailoctopus.com/api-documentation
+  - type: PostmanCollection
+    url: collections/emailoctopus.postman_collection.json
+  - type: OpenCollection
+    url: collections/emailoctopus.opencollection.json
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/campaigns
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/automations/queue
+- aid: emailoctopus:emailoctopus-field-api
+  name: EmailOctopus Field API
+  description: The Field API from EmailOctopus — 2 operation(s) for field.
+  humanURL: https://emailoctopus.com/api-documentation/lists
+  baseURL: https://api.emailoctopus.com
   tags:
-  - Reports
-  - Analytics
-  - Campaigns
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://emailoctopus.com/api-documentation/campaigns
-  baseURL: https://api.emailoctopus.com
+  - Field
   properties:
-  - url: https://emailoctopus.com/api-documentation/campaigns
-    type: Documentation
-  - url: https://emailoctopus.com/api-documentation
-    type: APIReference
-  - url: openapi/emailoctopus-openapi.yml
-    type: OpenAPI
-  - url: collections/emailoctopus.postman_collection.json
-    type: PostmanCollection
-  - url: collections/emailoctopus.opencollection.json
-    type: OpenCollection
-  description: Pull campaign performance data - summary statistics, per-link click
-    reports, and per-contact activity reports (sent, opened, clicked, bounced,
-    complained, unsubscribed).
+  - type: OpenAPI
+    url: openapi/emailoctopus-field-api-openapi.yml
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/lists
+  - type: APIReference
+    url: https://emailoctopus.com/api-documentation
+  - type: PostmanCollection
+    url: collections/emailoctopus.postman_collection.json
+  - type: OpenCollection
+    url: collections/emailoctopus.opencollection.json
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/campaigns
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/automations/queue
+- aid: emailoctopus:emailoctopus-list-api
+  name: EmailOctopus List API
+  description: The List API from EmailOctopus — 2 operation(s) for list.
+  humanURL: https://emailoctopus.com/api-documentation/lists
+  baseURL: https://api.emailoctopus.com
+  tags:
+  - List
+  properties:
+  - type: OpenAPI
+    url: openapi/emailoctopus-list-api-openapi.yml
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/lists
+  - type: APIReference
+    url: https://emailoctopus.com/api-documentation
+  - type: PostmanCollection
+    url: collections/emailoctopus.postman_collection.json
+  - type: OpenCollection
+    url: collections/emailoctopus.opencollection.json
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/campaigns
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/automations/queue
+- aid: emailoctopus:emailoctopus-tag-api
+  name: EmailOctopus Tag API
+  description: The Tag API from EmailOctopus — 2 operation(s) for tag.
+  humanURL: https://emailoctopus.com/api-documentation/lists
+  baseURL: https://api.emailoctopus.com
+  tags:
+  - Tag
+  properties:
+  - type: OpenAPI
+    url: openapi/emailoctopus-tag-api-openapi.yml
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/lists
+  - type: APIReference
+    url: https://emailoctopus.com/api-documentation
+  - type: PostmanCollection
+    url: collections/emailoctopus.postman_collection.json
+  - type: OpenCollection
+    url: collections/emailoctopus.opencollection.json
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/campaigns
+  - type: Documentation
+    url: https://emailoctopus.com/api-documentation/automations/queue
 common:
 - type: AgenticAccess
   url: agentic-access/emailoctopus-agentic-access.yml

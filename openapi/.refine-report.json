@@ -1,0 +1,24 @@
+{
+  "provider": "emailoctopus",
+  "sources": [
+    "emailoctopus-automation-api-openapi.yml",
+    "emailoctopus-campaign-api-openapi.yml",
+    "emailoctopus-contact-api-openapi.yml",
+    "emailoctopus-field-api-openapi.yml",
+    "emailoctopus-list-api-openapi.yml",
+    "emailoctopus-tag-api-openapi.yml"
+  ],
+  "outputs": [
+    "emailoctopus-automation-api-openapi.yml",
+    "emailoctopus-campaign-api-openapi.yml",
+    "emailoctopus-contact-api-openapi.yml",
+    "emailoctopus-field-api-openapi.yml",
+    "emailoctopus-list-api-openapi.yml",
+    "emailoctopus-tag-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

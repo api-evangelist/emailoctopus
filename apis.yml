@@ -2,11 +2,16 @@ aid: emailoctopus
 url: https://raw.githubusercontent.com/api-evangelist/emailoctopus/refs/heads/main/apis.yml
 name: EmailOctopus
 kind: company
-description: EmailOctopus is an affordable email-marketing platform for newsletters,
-  campaigns, automations, and audience management. Its REST API (v2 at
-  https://api.emailoctopus.com, Bearer authenticated) lets developers manage lists,
-  contacts, custom fields, tags, campaigns, automations, and campaign reports
-  programmatically.
+description: EmailOctopus is an affordable email-marketing platform for newsletters, campaigns, automations
+  and audience management, built on a low-cost sending model that undercuts the incumbent ESPs. Its v2
+  REST API is served from a single host, https://api.emailoctopus.com, with no version segment in the
+  path, and is authenticated with a Bearer API key. The API covers subscriber lists, contacts, per-list
+  custom fields and tags, campaigns and three campaign report projections, plus an operation to enqueue
+  a contact into an automation. EmailOctopus publishes a real OpenAPI 3.1.0 document (25 operations, 19
+  schemas) at its v2 reference URL, documents an RFC 7807 error envelope with dereferenceable type URIs,
+  cursor pagination, a token-bucket rate limit of 10 requests per second with a burst of 100, and an HMAC-SHA256-signed
+  webhook surface carrying eight contact event types. It ships no official client SDK, no CLI and no MCP
+  server.
 accessModel:
   pricing: freemium
   onboarding: self-serve
@@ -27,142 +32,155 @@ tags:
 - Newsletters
 - Campaigns
 - Automation
+- Contacts
+- Lists
+- Marketing
+- Webhooks
+- Transactional Email
+- Subscriber Management
+- Reporting
 created: '2026-06-25'
-modified: '2026-06-25'
+modified: '2026-08-13'
 specificationVersion: '0.19'
 apis:
 - aid: emailoctopus:emailoctopus-automation-api
   name: EmailOctopus Automation API
-  description: The Automation API from EmailOctopus — 1 operation(s) for automation.
-  humanURL: https://emailoctopus.com/api-documentation/lists
+  description: Enqueue an existing contact into an EmailOctopus automation. Write-only — the v2 API exposes
+    no operation to list or read automations, so the automation id must come from the dashboard. 1 operation(s)
+    in the EmailOctopus v2 OpenAPI 3.1.0.
+  humanURL: https://emailoctopus.com/api-documentation/v2
   baseURL: https://api.emailoctopus.com
   tags:
   - Automation
+  - Email Marketing
   properties:
   - type: OpenAPI
     url: openapi/emailoctopus-automation-api-openapi.yml
+  - type: Overlay
+    url: overlays/emailoctopus-automation-overlay.yaml
   - type: Documentation
-    url: https://emailoctopus.com/api-documentation/lists
+    url: https://emailoctopus.com/api-documentation/v2
   - type: APIReference
-    url: https://emailoctopus.com/api-documentation
+    url: https://emailoctopus.com/api-documentation/v2
   - type: PostmanCollection
-    url: collections/emailoctopus.postman_collection.json
+    url: collections/emailoctopus-automation-api.postman_collection.json
   - type: OpenCollection
-    url: collections/emailoctopus.opencollection.json
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/campaigns
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/automations/queue
+    url: collections/emailoctopus-automation-api.opencollection.json
 - aid: emailoctopus:emailoctopus-campaign-api
   name: EmailOctopus Campaign API
-  description: The Campaign API from EmailOctopus — 5 operation(s) for campaign.
-  humanURL: https://emailoctopus.com/api-documentation/lists
+  description: 'Read campaigns and their three report projections — summary counters, per-link clicks,
+    and per-contact engagement rows. Read-only: campaigns cannot be created, scheduled or sent through
+    the v2 API. 5 operation(s) in the EmailOctopus v2 OpenAPI 3.1.0.'
+  humanURL: https://emailoctopus.com/api-documentation/v2
   baseURL: https://api.emailoctopus.com
   tags:
   - Campaign
+  - Email Marketing
   properties:
   - type: OpenAPI
     url: openapi/emailoctopus-campaign-api-openapi.yml
+  - type: Overlay
+    url: overlays/emailoctopus-campaign-overlay.yaml
   - type: Documentation
-    url: https://emailoctopus.com/api-documentation/lists
+    url: https://emailoctopus.com/api-documentation/v2
   - type: APIReference
-    url: https://emailoctopus.com/api-documentation
+    url: https://emailoctopus.com/api-documentation/v2
   - type: PostmanCollection
-    url: collections/emailoctopus.postman_collection.json
+    url: collections/emailoctopus-campaign-api.postman_collection.json
   - type: OpenCollection
-    url: collections/emailoctopus.opencollection.json
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/campaigns
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/automations/queue
+    url: collections/emailoctopus-campaign-api.opencollection.json
 - aid: emailoctopus:emailoctopus-contact-api
   name: EmailOctopus Contact API
-  description: The Contact API from EmailOctopus — 3 operation(s) for contact.
-  humanURL: https://emailoctopus.com/api-documentation/lists
+  description: 'Manage subscribers on a list: create, read, update, delete, upsert by email address, and
+    update many at once through the batch endpoint. The upsert (PUT /lists/{list_id}/contacts) is the
+    safe-retry path, since the API publishes no idempotency key. 7 operation(s) in the EmailOctopus v2
+    OpenAPI 3.1.0.'
+  humanURL: https://emailoctopus.com/api-documentation/v2
   baseURL: https://api.emailoctopus.com
   tags:
   - Contact
+  - Email Marketing
   properties:
   - type: OpenAPI
     url: openapi/emailoctopus-contact-api-openapi.yml
+  - type: Overlay
+    url: overlays/emailoctopus-contact-overlay.yaml
   - type: Documentation
-    url: https://emailoctopus.com/api-documentation/lists
+    url: https://emailoctopus.com/api-documentation/v2
   - type: APIReference
-    url: https://emailoctopus.com/api-documentation
+    url: https://emailoctopus.com/api-documentation/v2
   - type: PostmanCollection
-    url: collections/emailoctopus.postman_collection.json
+    url: collections/emailoctopus-contact-api.postman_collection.json
   - type: OpenCollection
-    url: collections/emailoctopus.opencollection.json
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/campaigns
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/automations/queue
+    url: collections/emailoctopus-contact-api.opencollection.json
 - aid: emailoctopus:emailoctopus-field-api
   name: EmailOctopus Field API
-  description: The Field API from EmailOctopus — 2 operation(s) for field.
-  humanURL: https://emailoctopus.com/api-documentation/lists
+  description: Define the per-list custom fields contact records are written against. Fields are keyed
+    by a stable tag slug and typed text, number or date, with optional choices and a fallback value. 3
+    operation(s) in the EmailOctopus v2 OpenAPI 3.1.0.
+  humanURL: https://emailoctopus.com/api-documentation/v2
   baseURL: https://api.emailoctopus.com
   tags:
   - Field
+  - Email Marketing
   properties:
   - type: OpenAPI
     url: openapi/emailoctopus-field-api-openapi.yml
+  - type: Overlay
+    url: overlays/emailoctopus-field-overlay.yaml
   - type: Documentation
-    url: https://emailoctopus.com/api-documentation/lists
+    url: https://emailoctopus.com/api-documentation/v2
   - type: APIReference
-    url: https://emailoctopus.com/api-documentation
+    url: https://emailoctopus.com/api-documentation/v2
   - type: PostmanCollection
-    url: collections/emailoctopus.postman_collection.json
+    url: collections/emailoctopus-field-api.postman_collection.json
   - type: OpenCollection
-    url: collections/emailoctopus.opencollection.json
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/campaigns
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/automations/queue
+    url: collections/emailoctopus-field-api.opencollection.json
 - aid: emailoctopus:emailoctopus-list-api
   name: EmailOctopus List API
-  description: The List API from EmailOctopus — 2 operation(s) for list.
-  humanURL: https://emailoctopus.com/api-documentation/lists
+  description: Create and manage subscriber lists, the aggregate root of the EmailOctopus data model.
+    Fields, tags and contacts are all owned by a list and addressed through list-scoped paths. 5 operation(s)
+    in the EmailOctopus v2 OpenAPI 3.1.0.
+  humanURL: https://emailoctopus.com/api-documentation/v2
   baseURL: https://api.emailoctopus.com
   tags:
   - List
+  - Email Marketing
   properties:
   - type: OpenAPI
     url: openapi/emailoctopus-list-api-openapi.yml
+  - type: Overlay
+    url: overlays/emailoctopus-list-overlay.yaml
   - type: Documentation
-    url: https://emailoctopus.com/api-documentation/lists
+    url: https://emailoctopus.com/api-documentation/v2
   - type: APIReference
-    url: https://emailoctopus.com/api-documentation
+    url: https://emailoctopus.com/api-documentation/v2
   - type: PostmanCollection
-    url: collections/emailoctopus.postman_collection.json
+    url: collections/emailoctopus-list-api.postman_collection.json
   - type: OpenCollection
-    url: collections/emailoctopus.opencollection.json
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/campaigns
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/automations/queue
+    url: collections/emailoctopus-list-api.opencollection.json
 - aid: emailoctopus:emailoctopus-tag-api
   name: EmailOctopus Tag API
-  description: The Tag API from EmailOctopus — 2 operation(s) for tag.
-  humanURL: https://emailoctopus.com/api-documentation/lists
+  description: Create, rename, delete and list the tags used to segment contacts on a list. Tags are keyed
+    by slug rather than an id. 4 operation(s) in the EmailOctopus v2 OpenAPI 3.1.0.
+  humanURL: https://emailoctopus.com/api-documentation/v2
   baseURL: https://api.emailoctopus.com
   tags:
   - Tag
+  - Email Marketing
   properties:
   - type: OpenAPI
     url: openapi/emailoctopus-tag-api-openapi.yml
+  - type: Overlay
+    url: overlays/emailoctopus-tag-overlay.yaml
   - type: Documentation
-    url: https://emailoctopus.com/api-documentation/lists
+    url: https://emailoctopus.com/api-documentation/v2
   - type: APIReference
-    url: https://emailoctopus.com/api-documentation
+    url: https://emailoctopus.com/api-documentation/v2
   - type: PostmanCollection
-    url: collections/emailoctopus.postman_collection.json
+    url: collections/emailoctopus-tag-api.postman_collection.json
   - type: OpenCollection
-    url: collections/emailoctopus.opencollection.json
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/campaigns
-  - type: Documentation
-    url: https://emailoctopus.com/api-documentation/automations/queue
+    url: collections/emailoctopus-tag-api.opencollection.json
 common:
 - type: AgenticAccess
   url: agentic-access/emailoctopus-agentic-access.yml
@@ -175,13 +193,60 @@ common:
 - type: Website
   url: https://emailoctopus.com
 - type: Documentation
-  url: https://emailoctopus.com/api-documentation
+  url: https://emailoctopus.com/api-documentation/v2
 - type: Plans
   url: plans/emailoctopus-plans-pricing.yml
 - type: RateLimits
   url: rate-limits/emailoctopus-rate-limits.yml
 - type: FinOps
   url: finops/emailoctopus-finops.yml
+- type: OpenAPI
+  url: openapi/_original/emailoctopus-v2-openapi.json
+- type: Packages
+  url: packages/emailoctopus-packages.yml
+- type: LLMsTxt
+  url: llms/emailoctopus-llms.txt
+- type: Conventions
+  url: conventions/emailoctopus-conventions.yml
+- type: ErrorCatalog
+  url: errors/emailoctopus-problem-types.yml
+- type: DataModel
+  url: data-model/emailoctopus-data-model.yml
+- type: Conformance
+  url: conformance/emailoctopus-conformance.yml
+- type: Lifecycle
+  url: lifecycle/emailoctopus-lifecycle.yml
+- type: StatusPage
+  url: https://status.emailoctopus.com
+- type: Webhooks
+  url: asyncapi/emailoctopus-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Components
+  url: components/emailoctopus-components.yml
+- type: APIReference
+  url: https://emailoctopus.com/api-documentation/v2
+- type: GettingStarted
+  url: https://emailoctopus.com/api-documentation/v2#section/Authentication
+- type: Support
+  url: https://help.emailoctopus.com
+- type: Blog
+  url: https://emailoctopus.com/blog
+- type: Pricing
+  url: https://emailoctopus.com/pricing
+- type: SignUp
+  url: https://emailoctopus.com/account/sign-up
+- type: TermsOfService
+  url: https://emailoctopus.com/legal/terms
+- type: PrivacyPolicy
+  url: https://emailoctopus.com/legal/privacy
+- type: Integrations
+  url: https://emailoctopus.com/integrations
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v1

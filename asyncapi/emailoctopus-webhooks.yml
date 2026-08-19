@@ -1,0 +1,77 @@
+generated: '2026-08-13'
+method: searched
+source: https://help.emailoctopus.com/article/314-webhooks
+spec_type: null
+spec_note: >-
+  EmailOctopus publishes NO AsyncAPI document. The event surface is real and fully
+  documented in prose, so this file captures the webhook catalog and apis.yml carries a
+  `Webhooks` pointer only — no `AsyncAPI` pointer, because no AsyncAPI exists and
+  authoring one on the provider's behalf would misrepresent what they publish.
+  The published OpenAPI 3.1.0 also declares no `webhooks` object.
+surface: webhooks
+transport: https-post
+delivery:
+  method: POST
+  content_type: application/json
+  payload_shape: array
+  max_events_per_request: 1000
+  buffering: >-
+    Events are buffered for up to one minute before being sent, so a single request can
+    carry many events.
+  endpoints_per_team: 2
+  retries: >-
+    Failed deliveries are retried up to 9 times over approximately 10 days with
+    escalating delays between attempts.
+security:
+  signature_header: EmailOctopus-Signature
+  algorithm: HMAC-SHA256
+  signature_format: 'sha256=<hex digest>'
+  signed_payload: the raw request body
+  secret: per-webhook secret value shown when the webhook is created
+  note: >-
+    Verbatim from the docs: the signature is computed with the "HMAC-SHA256 algorithm
+    with the request body as the data and a secret value" as the key, prefixed with
+    "sha256=".
+configuration:
+  requirement: an HTTPS endpoint that accepts a JSON request body
+  filters:
+    - Select which event types the endpoint receives.
+    - Optionally exclude events generated via the API or via an import.
+events:
+  - type: contact.created
+    description: A contact was added to a list.
+  - type: contact.updated
+    description: A contact's details, fields, tags or status changed.
+  - type: contact.deleted
+    description: A contact was removed from a list.
+  - type: contact.unsubscribed
+    description: A contact unsubscribed.
+  - type: contact.bounced
+    description: A message to the contact bounced.
+  - type: contact.complained
+    description: The contact raised a spam complaint.
+  - type: contact.opened
+    description: The contact opened a campaign email.
+  - type: contact.clicked
+    description: The contact clicked a link in a campaign email.
+event_count: 8
+event_payload:
+  fields:
+    - {name: id, type: uuid, required: true, description: Unique event identifier.}
+    - {name: type, type: string, required: true, description: One of the event types above.}
+    - {name: list_id, type: uuid, required: true, description: The list the contact belongs to.}
+    - {name: contact_id, type: uuid, required: true, description: The affected contact.}
+    - {name: contact_email_address, type: string, required: true, description: The contact's email address.}
+    - {name: contact_fields, type: object, required: false, description: The contact's custom fields.}
+    - {name: contact_tags, type: array, required: false, description: The contact's tags.}
+    - {name: contact_status, type: string, required: false, description: Contact status at the time of the event.}
+    - {name: occurred_at, type: datetime, required: true, description: ISO 8601 timestamp of the event.}
+    - {name: campaign_id, type: uuid, required: false, description: The related campaign, on campaign-driven events.}
+  contact_status_values: [PENDING, SUBSCRIBED, UNSUBSCRIBED, BOUNCED, COMPLAINED]
+cross_ref:
+  conventions: conventions/emailoctopus-conventions.yml
+  data_model: data-model/emailoctopus-data-model.yml
+x-evidence:
+  - url: https://help.emailoctopus.com/article/314-webhooks
+    http_status: 200
+    kind: vendor-webhook-reference

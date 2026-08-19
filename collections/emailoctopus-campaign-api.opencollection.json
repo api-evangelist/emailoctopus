@@ -1,0 +1,155 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "EmailOctopus v2 Automation Campaign API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Campaign",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all campaigns",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records to return per page."
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for pagination; the ID of the last record on the previous page."
+              }
+            ]
+          },
+          "docs": "Get all campaigns"
+        },
+        {
+          "info": {
+            "name": "Get campaign",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns/:campaign_id",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the campaign."
+              }
+            ]
+          },
+          "docs": "Get campaign"
+        },
+        {
+          "info": {
+            "name": "Campaign summary report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns/:campaign_id/reports/summary",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the campaign."
+              }
+            ]
+          },
+          "docs": "Campaign summary report"
+        },
+        {
+          "info": {
+            "name": "Campaign links report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns/:campaign_id/reports/links",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the campaign."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records to return per page."
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for pagination; the ID of the last record on the previous page."
+              }
+            ]
+          },
+          "docs": "Campaign links report"
+        },
+        {
+          "info": {
+            "name": "Campaign contact reports",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/campaigns/:campaign_id/reports",
+            "params": [
+              {
+                "name": "campaign_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the campaign."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "The type of contact report to return."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records to return per page."
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for pagination; the ID of the last record on the previous page."
+              }
+            ]
+          },
+          "docs": "Per-contact activity for a campaign. The report type (sent, opened, clicked, bounced, complained, unsubscribed, etc.) is selected via the type query parameter."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

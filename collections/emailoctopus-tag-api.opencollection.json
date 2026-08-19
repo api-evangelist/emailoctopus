@@ -1,0 +1,132 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "EmailOctopus v2 Automation Tag API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tag",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/lists/:list_id/tags",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records to return per page."
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for pagination; the ID of the last record on the previous page."
+              }
+            ]
+          },
+          "docs": "Get all tags"
+        },
+        {
+          "info": {
+            "name": "Create tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.emailoctopus.com/lists/:list_id/tags",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create tag"
+        },
+        {
+          "info": {
+            "name": "Update tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/:list_id/tags/:tag",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "path",
+                "description": "The tag identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update tag"
+        },
+        {
+          "info": {
+            "name": "Delete tag",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.emailoctopus.com/lists/:list_id/tags/:tag",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "path",
+                "description": "The tag identifier."
+              }
+            ]
+          },
+          "docs": "Delete tag"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

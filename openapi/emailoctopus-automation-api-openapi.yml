@@ -1,57 +1,322 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: EmailOctopus v2 Automation API
-  description: The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.
-  termsOfService: https://emailoctopus.com/terms
-  contact:
-    name: EmailOctopus Support
-    url: https://help.emailoctopus.com
-  version: '2.0'
+  description: "# Introduction\n\nThe EmailOctopus API allows you to manage resources and perform actions within the platform\
+    \ programmatically. You'll need to <a href=\"https://emailoctopus.com/account/sign-up\" target=\"_blank\">create an account</a>\
+    \ before using the API, if you don't already have one.\n\nThe API is designed around <a href=\"https://en.wikipedia.org/wiki/REST\"\
+    \ target=\"_blank\">REST</a> principles. It has a predictable URL structure based on resources, accepts <a href=\"https://www.json.org/json-en.html\"\
+    \ target=\"_blank\">JSON-encoded</a> request bodies, returns JSON-encoded responses and uses standard HTTP response codes,\
+    \ authentication and verbs.\n\nThe base URL for the API is https://api.emailoctopus.com.\n\n# Authentication\nTo use the\
+    \ API, you'll need to generate an API key. You can do this in your <a href=\"https://emailoctopus.com/developer/api-keys\"\
+    \ target=\"_blank\">account settings</a>. If you have an API key created prior to the release of API v2 (labelled 'legacy')\
+    \ you'll need to generate a new API key. New API keys are compatible with all versions of the API.\n\nThe API uses bearer\
+    \ authentication to authenticate requests. Authenticate your request by including the following header:\n```\nAuthorization:\
+    \ Bearer {token}\n```\n\nFor example, using curl:\n```\ncurl https://api.emailoctopus.com/lists/ -H \"Authorization: Bearer\
+    \ {token}\"\n```\n\nIf you see a JSON-formatted response with your list details, that's great! That means you can connect\
+    \ to the API, and your authentication token works.\n\nIf you encounter a JSON error response, refer to the `type` field\
+    \ for a link to detailed documentation. For non-JSON errors, the request likely didn't reach the server. In that case,\
+    \ double-check the URL and verify that your request is correctly formatted.\n\n# Rate limiting\nRequests to the API are\
+    \ subject to a rate limit, which is implemented using the <a href=\"https://en.wikipedia.org/wiki/Token_bucket\" target=\"\
+    _blank\">token bucket algorithm</a>. Each request consumes one token and your bucket holds up to 100 tokens. Tokens are\
+    \ replenished at a rate of 10 per second. To check your remaining tokens, refer to the `X-RateLimiting-Remaining` header\
+    \ in the response.\n\nThis system enables a steady request rate of up to 10 per second or a burst of up to 100 requests\
+    \ in a single instance if needed.\n\nIf your account exceeds the rate limit, the request will return a [429 HTTP status\
+    \ code](https://emailoctopus.com/api-documentation/v2#too-many-requests).\n\n# Pagination\nWhen you request a collection\
+    \ of entities, such as contacts belonging to a list, the data will be paginated rather than returned all at once. Each\
+    \ response will contain a maximum of 100 results in the `data` attribute.\n\nPagination information is included in the\
+    \ response `paging` attribute. This data will contain `next` attributes, with a URL and a `starting_after` cursor. The\
+    \ cursor serves as a link to the next page. You can use the cursor as a `starting_after` query string parameter to navigate\
+    \ to the next page or follow the provided URL in the JSON structure.\n\nHere's an example of what the `paging` attribute\
+    \ looks like:\n```\n\"paging\": {\n    \"next\": {\n        \"url\": \"https://api.emailoctopus.com/lists/{list_id}/contacts?starting_after=WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0&limit=100\"\
+    ,\n        \"starting_after\": \"WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0\"\
+    \n    }\n }\n```\nYou can add the cursor to your request URL by including the `starting_after` query string parameter,\
+    \ like this:\n```\nhttps://api.emailoctopus.com/lists/{list_id}/contacts?starting_after=WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0\n\
+    ```\n\nThe cursor should always be provided exactly as it was returned in a previous request. Avoid deconstructing the\
+    \ cursor and relying on any data inside it, as the implementation of the cursor is subject to change.\n\n# Errors\nError\
+    \ are returned in a standardised format following <a href=\"https://datatracker.ietf.org/doc/html/rfc7807\" target=\"\
+    _blank\">RFC 7807</a>. For example:\n\n```\n{\n    \"title\": \"An error occurred.\",\n    \"detail\": \"Bad request.\"\
+    ,\n    \"status\": 400,\n    \"type\": \"https://emailoctopus.com/api-documentation/v2#bad-request\"\n}\n```\n\nYou can\
+    \ use the `type` value to navigate to the documentation for more details about the specific error.\n\nYou may also encounter\
+    \ validation errors, which will return a 422 HTTP status code and a payload formatted according to <a href=\"https://www.rfc-editor.org/rfc/rfc9457.html\"\
+    \ target=\"_blank\">RFC 9457</a>.\n```\n{\n    \"title\": \"An error occurred.\",\n    \"detail\": \"Unprocessable content.\"\
+    ,\n    \"status\": 422,\n    \"errors\": [\n         {\n            \"detail\": \"This value should not be blank.\",\n\
+    \            \"pointer\": \"/email_address\"\n         }\n    ],\n    \"type\": \"https://emailoctopus.com/api-documentation/v2#unprocessable-content\"\
+    \n}\n```\n\nIn the following sections, you can find more information about each type of error.\n\n## access-denied\nYou\
+    \ do not have permission to access the requested entity, such as trying to get the contacts in a list belonging to another\
+    \ account.\n\nCheck that the API key you're using belongs to the account you're trying to access data in. You can verify\
+    \ this by navigating to the account's <a href=\"https://emailoctopus.com/developer/api-keys\" target=\"_blank\">API keys</a>\
+    \ and checking there's a key ending in the same four characters.\n\n## already-exists\nYou are attempting to create an\
+    \ entity that already exists, such as creating a tag on a list that already contains that tag, or adding a contact to\
+    \ a list that already includes that contact.\n\nYou can fix this by checking if the entity already exists before you attempt\
+    \ to create it. Or you may wish to handle the error gracefully in your code and update the existing resource when a duplicate\
+    \ is spotted.\n\nSome endpoints, such as the [create or update contact](#tag/Contact/operation/api_lists_list_idcontacts_put)\
+    \ endpoint, support an *upsert* operation. An upsert allows you to either update the entity if it exists or create a new\
+    \ one if it doesn't. Consider using this feature where applicable.\n\n## bad-request\nThe request body is not in the format\
+    \ expected. Check that the request body is valid JSON.\n\n## conflict\nThis request conflicts with the system state. <a\
+    \ href=\"https://help.emailoctopus.com/category/20-getting-in-touch\" target=\"_blank\">Get in touch</a> if you require\
+    \ further assistance.\n\n## internal-error\nThis error is returned when the API encounters an unexpected condition or\
+    \ an internal issue on the server. If you receive this error, it is probably not an issue with your request.\n\nIn some\
+    \ cases, retrying the request after some time may resolve the issue. We'll always be notified of the error via our internal\
+    \ tracking tools, but if the problem persists, <a href=\"https://help.emailoctopus.com/category/20-getting-in-touch\"\
+    \ target=\"_blank\">get in touch</a> with details about the error and we'll investigate.\n\n## not-found\nThe resource\
+    \ you're trying to access or modify could not be found. This error is typically caused by using an invalid or incorrect\
+    \ identifier, such as a list ID or contact ID that doesn't exist in your account.\n\nDouble-check the resource identifiers\
+    \ you're using in your request, and ensure they match the actual resources in your EmailOctopus account.\n\n## out-of-limits\n\
+    Executing this operation would cause you to exceed your plan limits. See our <a href=\"https://emailoctopus.com/pricing#comparison\"\
+    \ target=\"_blank\">pricing comparison</a> for further details on these limits.\n\n## unauthorized\nThe API key provided\
+    \ in the request is either invalid or missing. Ensure that you're using the correct API key and that it is included in\
+    \ the request header as shown in the [authentication section](/api-documentation/v2#section/Authentication).\n\n## unprocessable-content\n\
+    The JSON payload in your request body doesn't meet the required criteria. Check the errors attribute for details on the\
+    \ specific issues. It will include a pointer to the problematic attribute and an error description.\n\n## unsupported-media-type\n\
+    When making requests that require a JSON payload in the body, you must specify a `Content-Type` of `application/json`.\n\
+    \n## too-many-requests\nYour account has exceeded the rate limit. You can use the `X-RateLimit-Retry-After` header to\
+    \ determine when to make another request. See the [rate limiting section](/api-documentation/v2#section/Rate-limiting)\
+    \ section for further details.\n\n## method-not-allowed\nThe HTTP method used in your request is not supported for the\
+    \ endpoint you are trying to access. For example, attempting to use a POST method on an endpoint that only supports GET.\n\
+    \nCheck the API documentation for the correct methods allowed for each endpoint. Ensure your request uses one of the supported\
+    \ methods (e.g., GET, POST, PUT, DELETE) for the specific operation you want to perform.\n"
+  version: 2.0.0
 servers:
 - url: https://api.emailoctopus.com
+  description: ''
 security:
 - api_key: []
 tags:
 - name: Automation
+  description: 'An automation is a sequence of automated steps triggered by an event, such as when a contact subscribes to
+    a list or is tagged.
+
+    Automations allow you to automatically send emails, update fields, apply tags and more.
+
+    '
 paths:
   /automations/{automation_id}/queue:
-    parameters:
-    - name: automation_id
-      in: path
-      required: true
-      description: The ID of the automation.
-      schema:
-        type: string
-        example: 00000000-0000-0000-0000-000000000000
     post:
-      operationId: startAutomation
+      operationId: api_automations_automation_idqueue_post
       tags:
       - Automation
+      responses:
+        '204':
+          description: No content.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#conflict
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource already exists.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 409
+        '422':
+          description: Unprocessable content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unprocessable-content
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Unprocessable content.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 422
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
       summary: Start an automation for a contact
-      requestBody:
+      description: Start an automation for a specific contact. The automation must have the **Started via API** trigger type.
+        A contact can only trigger an automation once, unless you've enabled **Allow contacts to repeat** in the automation's
+        settings.
+      parameters:
+      - name: automation_id
+        in: path
+        description: The ID of the automation.
         required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+      requestBody:
+        description: ''
         content:
           application/json:
             schema:
               type: object
-              required:
-              - list_id
-              - contact_id
+              description: ''
               properties:
-                list_id:
-                  type: string
-                  description: The ID of the list the contact belongs to.
-                  example: 00000000-0000-0000-0000-000000000000
                 contact_id:
                   type: string
-                  description: The ID of the contact to enter into the automation.
-                  example: 00000000-0000-0000-0000-000000000000
-      responses:
-        '202':
-          description: The contact was queued into the automation.
+                  description: The ID of the contact, or an MD5 hash of the lowercase version of the contact's email address.
+                  example: 631251b876fece73bc9dd647fe596d5f
+              required:
+              - contact_id
+        required: false
 components:
   securitySchemes:
     api_key:
       type: http
+      description: You can obtain your API key at https://api.emailoctopus.com/developer/api-keys/create
+      name: Authorization
+      in: header
       scheme: bearer
-      description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create

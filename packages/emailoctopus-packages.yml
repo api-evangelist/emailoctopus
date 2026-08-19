@@ -1,0 +1,155 @@
+generated: '2026-08-13'
+method: searched
+source: https://help.emailoctopus.com/article/93-sdks-and-libraries
+docs: https://help.emailoctopus.com/article/93-sdks-and-libraries
+summary: >-
+  EmailOctopus publishes no first-party REST client SDK. Their own SDK page states
+  verbatim: "While we don't yet have an official SDK, you should find that our API
+  plays nicely with any REST client in your chosen language." The page then lists
+  six community-maintained libraries and explicitly disclaims them as "unofficial
+  and have not been tested or verified by the team." The only first-party
+  distributable package EmailOctopus ships is its own WordPress plugin, published
+  under the emailoctopus.com WordPress.org author account.
+official_client_library_count: 0
+first_party_package_count: 1
+community_sdk_count: 7
+sdk_pointer_emitted: false
+sdk_pointer_reason: >-
+  No `type: SDKs` pointer is wired for EmailOctopus. The provider states on its own
+  SDK page that it ships no official SDK, and the one first-party package (the
+  WordPress plugin) is an end-user integration, not an API client library. Emitting
+  an SDK pointer here would credit EmailOctopus with a client library it does not
+  publish.
+notes:
+  - >-
+    Currency signal: every community library on the vendor's own SDK page predates
+    the v2 API launch (2024-10-07) except the npm emailoctopus-api-client
+    (2.0.4, 2025-09-29) and the PHP client (v1.0.4, 2025-01-18). The Ruby gem
+    (0.1.0, 2016-12-05) and the older Node wrapper (1.1.2, 2017-02-03) are v1-era
+    and are listed here because the provider still links them, not because they
+    are current.
+  - >-
+    No PyPI package exists for the Python library EmailOctopus links; it is
+    distributed as a GitHub repository only, so there is no registry metadata
+    endpoint to read a version from.
+packages:
+  - language: php
+    registry: wordpress.org
+    name: emailoctopus
+    url: https://wordpress.org/plugins/emailoctopus/
+    repository: https://wordpress.org/plugins/emailoctopus/
+    install: Install "Email Marketing by EmailOctopus" from the WordPress plugin directory
+    official: true
+    version: 3.1.10
+    published: '2026-05-19'
+    note: >-
+      First-party. Published by the emailoctopus WordPress.org author account
+      (https://profiles.wordpress.org/emailoctopus/). Version and date read from
+      api.wordpress.org/plugins/info/1.0/emailoctopus.json.
+
+  - language: javascript
+    registry: npm
+    name: emailoctopus-api-client
+    url: https://www.npmjs.com/package/emailoctopus-api-client
+    repository: https://github.com/spookyuser/email-octopus-api
+    install: npm install emailoctopus-api-client
+    official: false
+    version: 2.0.4
+    published: '2025-09-29'
+    note: Community-maintained; linked from the EmailOctopus SDK page. Version from registry.npmjs.org.
+
+  - language: javascript
+    registry: npm
+    name: email-octopus
+    url: https://www.npmjs.com/package/email-octopus
+    repository: https://github.com/wthomsen/email-octopus
+    install: npm install email-octopus
+    official: false
+    version: 1.1.2
+    published: '2017-02-03'
+    note: >-
+      Community-maintained Node wrapper linked from the EmailOctopus SDK page.
+      Last published 2017 — predates the v2 API by seven years.
+
+  - language: php
+    registry: packagist
+    name: goran-popovic/email-octopus-php
+    url: https://packagist.org/packages/goran-popovic/email-octopus-php
+    repository: https://github.com/goran-popovic/email-octopus-php
+    install: composer require goran-popovic/email-octopus-php
+    official: false
+    version: v1.0.4
+    published: '2025-01-18'
+    note: Community-maintained; linked from the EmailOctopus SDK page. Version from repo.packagist.org.
+
+  - language: php
+    registry: packagist
+    name: goran-popovic/email-octopus-laravel
+    url: https://packagist.org/packages/goran-popovic/email-octopus-laravel
+    repository: https://github.com/goran-popovic/email-octopus-laravel
+    install: composer require goran-popovic/email-octopus-laravel
+    official: false
+    version: v1.0.1
+    published: '2024-03-30'
+    note: Community-maintained Laravel wrapper; linked from the EmailOctopus SDK page.
+
+  - language: ruby
+    registry: rubygems
+    name: email_octopus
+    url: https://rubygems.org/gems/email_octopus
+    repository: https://github.com/tubbo/email_octopus
+    install: gem install email_octopus
+    official: false
+    version: 0.1.0
+    published: '2016-12-05'
+    note: >-
+      Community-maintained; linked from the EmailOctopus SDK page. Single 0.1.0
+      release from 2016 — v1-era and effectively abandoned.
+
+  - language: python
+    registry: null
+    name: emailoctopusAPI
+    url: https://github.com/vivekfantain/emailoctopusAPI
+    repository: https://github.com/vivekfantain/emailoctopusAPI
+    install: null
+    official: false
+    version: null
+    published: null
+    note: >-
+      Community-maintained and linked from the EmailOctopus SDK page, but not
+      published to PyPI (pypi.org/pypi/emailoctopus/json and two name variants all
+      returned 404). Source-only distribution, so there is no registry metadata
+      endpoint and no version to record.
+
+  - language: swift
+    registry: null
+    name: EmailOctopusKit
+    url: https://github.com/caloon/EmailOctopusKit
+    repository: https://github.com/caloon/EmailOctopusKit
+    install: null
+    official: false
+    version: null
+    published: null
+    note: >-
+      Community-maintained and linked from the EmailOctopus SDK page; distributed as
+      a Swift package from GitHub with no CocoaPods/registry entry, so no version
+      metadata endpoint exists to query.
+
+evidence:
+  - source: https://help.emailoctopus.com/article/93-sdks-and-libraries
+    kind: vendor-sdk-page
+  - source: https://api.wordpress.org/plugins/info/1.0/emailoctopus.json
+    kind: registry-metadata
+    status: 200
+  - source: https://registry.npmjs.org/emailoctopus-api-client
+    kind: registry-metadata
+    status: 200
+  - source: https://repo.packagist.org/packages/goran-popovic/email-octopus-php.json
+    kind: registry-metadata
+    status: 200
+  - source: https://rubygems.org/api/v1/gems/email_octopus.json
+    kind: registry-metadata
+    status: 200
+  - source: https://pypi.org/pypi/emailoctopus/json
+    kind: registry-metadata
+    status: 404

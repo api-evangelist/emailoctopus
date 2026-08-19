@@ -4,8 +4,13 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: EmailOctopus
 providerId: emailoctopus
 created: '2026-06-25'
-modified: '2026-06-25'
-reconciled: false
+modified: '2026-08-13'
+generated: '2026-08-13'
+method: searched
+source: https://emailoctopus.com/api-documentation/v2
+docs: https://help.emailoctopus.com/article/91-api-limits
+reconciled: true
+limit_count: 5
 tags:
 - Email
 - Email Marketing
@@ -16,28 +21,54 @@ tags:
 - Quotas
 - Throttling
 description: >-
-  The EmailOctopus v2 API enforces per-account request rate limits and returns
-  HTTP 429 when a client exceeds them. The API is also subject to the account's
-  plan-level sending quotas (monthly email volume and subscriber caps).
-  Specific per-endpoint request-per-second values are not published in the
-  public documentation and are not reconciled in this artifact.
+  EmailOctopus publishes its v2 rate limit precisely. Verbatim from the API reference:
+  "Requests to the API are subject to a rate limit, which is implemented using the token
+  bucket algorithm. Each request consumes one token and your bucket holds up to 100
+  tokens. Tokens are replenished at a rate of 10 per second." That is a sustained 10
+  requests per second with a burst of 100. Exceeding it returns HTTP 429
+  (too-many-requests); the knowledge base adds that the connection is blocked "for up to
+  a minute". Separately, plan-level subscriber and monthly-send caps apply and surface as
+  a 422 out-of-limits error rather than a 429.
 notes: >-
-  Verify the current request-rate limit and any Retry-After / rate-limit
-  response headers against EmailOctopus support or the API documentation during
-  reconciliation. Plan-level sending and subscriber caps are documented on the
-  pricing page.
+  Header naming is inconsistent in EmailOctopus's own documentation and both spellings are
+  recorded verbatim: the rate-limiting section names X-RateLimiting-Remaining for remaining
+  tokens, while the too-many-requests error section names X-RateLimit-Retry-After for the
+  retry delay. Neither header appeared on unauthenticated 401 probes of
+  https://api.emailoctopus.com/lists, so they are recorded as DOCUMENTED, not observed —
+  confirming them requires an authenticated request.
 sources:
-- https://emailoctopus.com/api-documentation
-- https://help.emailoctopus.com/article/94-api-documentation
+- https://emailoctopus.com/api-documentation/v2
+- https://help.emailoctopus.com/article/91-api-limits
 - https://emailoctopus.com/pricing
+algorithm: token-bucket
 responseCodes:
   throttled: 429
+  quota_exceeded: 422
+headers:
+- name: X-RateLimiting-Remaining
+  meaning: Tokens remaining in the bucket.
+  observed: false
+  documented_at: https://emailoctopus.com/api-documentation/v2
+- name: X-RateLimit-Retry-After
+  meaning: When it is safe to make another request after a 429.
+  observed: false
+  documented_at: https://emailoctopus.com/api-documentation/v2
 limits:
-- name: API Requests
+- name: Sustained Request Rate
   scope: account
   metric: requests
-  limit: see provider documentation
-  notes: Per-account request rate limit on the v2 API; exceeding it returns HTTP 429.
+  limit: 10
+  window: second
+  notes: Token replenishment rate. Verbatim, "Tokens are replenished at a rate of 10 per second."
+- name: Burst Capacity
+  scope: account
+  metric: requests
+  limit: 100
+  burst: true
+  window: instant
+  notes: >-
+    Bucket size. "your bucket holds up to 100 tokens" — a burst of up to 100 requests in a
+    single instance is permitted before throttling begins.
 - name: Monthly Email Volume
   scope: account
   metric: emails
@@ -47,17 +78,35 @@ limits:
   scope: account
   metric: subscribers
   limit: plan-dependent
-  notes: Free Starter plan caps at 2,500 subscribers; Pro pricing scales with subscriber count.
+  notes: >-
+    Free Starter plan caps at 2,500 subscribers; Pro pricing scales with subscriber count.
+    Exceeding the cap through the API returns 422 out-of-limits.
 - name: Pagination
   scope: request
   metric: records
-  limit: 1000
-  notes: Collection endpoints page results via limit and starting_after cursor parameters.
+  limit: 100
+  notes: >-
+    Collection endpoints return a maximum of 100 results per page in the `data` attribute,
+    paged with the `limit` and `starting_after` cursor parameters.
 policies:
+- name: Token Bucket
+  description: >-
+    One token per request; bucket of 100; refill 10/second. Enables a steady 10 rps or an
+    occasional burst of 100.
+- name: Blocking Window
+  description: >-
+    Exceeding the limit returns 429 and blocks the connection for up to one minute
+    (knowledge base, article 91).
+- name: Backoff Strategy
+  description: >-
+    Honour 429 responses, read X-RateLimit-Retry-After, and retry with exponential backoff.
+- name: Bulk Work Exemption
+  description: >-
+    EmailOctopus states that the dashboard import process is faster than the API for bulk
+    contact loading and is not subject to these limits, and recommends webhooks over polling
+    for change sync.
 - name: Plan-Based Limits
   description: Sending and subscriber limits are determined by the account's plan tier.
-- name: Backoff Strategy
-  description: Clients should honor HTTP 429 responses and retry with exponential backoff.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

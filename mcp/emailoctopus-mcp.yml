@@ -1,0 +1,116 @@
+generated: '2026-08-13'
+method: derived
+status: candidate
+source: openapi/_original/emailoctopus-v2-openapi.json
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: derived
+  note: >-
+    EmailOctopus publishes NO first-party MCP server — neither a hosted remote
+    endpoint nor an installable stdio package. Searches surfaced only third-party
+    gateway wrappers (Zapier MCP, Composio, viaSocket) that proxy the EmailOctopus
+    REST API on their own hosts under their own auth. Those are the integrator's
+    agent surface, not EmailOctopus's, so no MCPServer pointer is wired into
+    apis.yml and no endpoint is recorded here. The tools[] below are a CANDIDATE
+    projection derived from the provider's real OpenAPI operations — they describe
+    what an MCP server for this API would expose, not something that exists.
+third_party_wrappers:
+  - vendor: Zapier
+    url: https://zapier.com/mcp/emailoctopus
+    first_party: false
+  - vendor: Composio
+    url: https://composio.dev/toolkits/emailoctopus
+    first_party: false
+  - vendor: viaSocket
+    url: https://viasocket.com/mcp/emailoctopus
+    first_party: false
+server:
+  name: emailoctopus
+  transport: null
+  url: null
+  auth:
+    type: http-bearer
+    header: Authorization
+    format: 'Bearer {api_key}'
+    key_url: https://api.emailoctopus.com/developer/api-keys/create
+tool_count: 25
+tools:
+  - name: get_all_lists
+    description: Get all lists
+    source_operation: openapi/emailoctopus-list-api-openapi.yml#api_lists_get
+  - name: create_list
+    description: Create list
+    source_operation: openapi/emailoctopus-list-api-openapi.yml#api_lists_post
+  - name: get_list
+    description: Get list
+    source_operation: openapi/emailoctopus-list-api-openapi.yml#api_lists_list_id_get
+  - name: update_list
+    description: Update list
+    source_operation: openapi/emailoctopus-list-api-openapi.yml#api_lists_list_id_put
+  - name: delete_list
+    description: Delete a list
+    source_operation: openapi/emailoctopus-list-api-openapi.yml#api_lists_list_id_delete
+  - name: get_contacts
+    description: Get contacts
+    source_operation: openapi/emailoctopus-contact-api-openapi.yml#api_lists_list_idcontacts_get
+  - name: create_contact
+    description: Create contact
+    source_operation: openapi/emailoctopus-contact-api-openapi.yml#api_lists_list_idcontacts_post
+  - name: create_or_update_contact
+    description: Create or update contact (upsert)
+    source_operation: openapi/emailoctopus-contact-api-openapi.yml#api_lists_list_idcontacts_put
+  - name: update_multiple_contacts
+    description: Update multiple list contacts
+    source_operation: openapi/emailoctopus-contact-api-openapi.yml#api_lists_list_idcontactsbatch_put
+  - name: get_contact
+    description: Get contact
+    source_operation: openapi/emailoctopus-contact-api-openapi.yml#api_lists_list_idcontacts_contact_id_get
+  - name: update_contact
+    description: Update contact
+    source_operation: openapi/emailoctopus-contact-api-openapi.yml#api_lists_list_idcontacts_contact_id_put
+  - name: delete_contact
+    description: Delete contact
+    source_operation: openapi/emailoctopus-contact-api-openapi.yml#api_lists_list_idcontacts_contact_id_delete
+  - name: create_field
+    description: Create field
+    source_operation: openapi/emailoctopus-field-api-openapi.yml#api_lists_list_idfields_post
+  - name: update_field
+    description: Update field
+    source_operation: openapi/emailoctopus-field-api-openapi.yml#api_lists_list_idfields_tag_put
+  - name: delete_field
+    description: Delete field
+    source_operation: openapi/emailoctopus-field-api-openapi.yml#api_lists_list_idfields_tag_delete
+  - name: get_all_tags
+    description: Get all tags
+    source_operation: openapi/emailoctopus-tag-api-openapi.yml#api_lists_list_idtags_get
+  - name: create_tag
+    description: Create tag
+    source_operation: openapi/emailoctopus-tag-api-openapi.yml#api_lists_list_idtags_post
+  - name: update_tag
+    description: Update tag
+    source_operation: openapi/emailoctopus-tag-api-openapi.yml#api_lists_list_idtags_tag_put
+  - name: delete_tag
+    description: Delete tag
+    source_operation: openapi/emailoctopus-tag-api-openapi.yml#api_lists_list_idtags_tag_delete
+  - name: get_all_campaigns
+    description: Get all campaigns
+    source_operation: openapi/emailoctopus-campaign-api-openapi.yml#api_campaigns_get
+  - name: get_campaign
+    description: Get campaign
+    source_operation: openapi/emailoctopus-campaign-api-openapi.yml#api_campaigns_campaign_id_get
+  - name: get_campaign_contact_reports
+    description: Campaign contact reports
+    source_operation: openapi/emailoctopus-campaign-api-openapi.yml#api_campaigns_campaign_idreports_get
+  - name: get_campaign_links_report
+    description: Campaign links report
+    source_operation: openapi/emailoctopus-campaign-api-openapi.yml#api_campaigns_campaign_idreportslinks_get
+  - name: get_campaign_summary_report
+    description: Campaign summary report
+    source_operation: openapi/emailoctopus-campaign-api-openapi.yml#api_campaigns_campaign_idreportssummary_get
+  - name: start_automation
+    description: Start an automation for a contact
+    source_operation: openapi/emailoctopus-automation-api-openapi.yml#api_automations_automation_idqueue_post

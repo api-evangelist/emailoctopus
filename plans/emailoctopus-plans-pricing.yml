@@ -4,8 +4,22 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: EmailOctopus
 providerId: emailoctopus
 created: '2026-06-25'
-modified: '2026-06-25'
+modified: '2026-08-13'
+generated: '2026-08-13'
+method: searched
+source: https://emailoctopus.com/pricing
+plan_count: 3
 reconciled: true
+verified: '2026-08-13'
+verification_note: >-
+  Re-read from https://emailoctopus.com/pricing (HTTP 200) on 2026-08-13. Starter remains
+  free at 2,500 subscribers / 10,000 emails per month with EmailOctopus branding, 30-day
+  reports, 1 landing page, 1 form and 1 user. Pro still starts at $9/month billed yearly
+  ("Save $12 when billed yearly"), removes branding, and unlocks unlimited landing pages,
+  forms and users. The 20% lifetime nonprofit discount and custom quoting above 500,000
+  subscribers are both still published. Pro is a continuous curve priced by subscriber
+  count, so the thresholds recorded in plans[] are representative points on that curve,
+  not a discrete tier list.
 tags:
 - Email
 - Email Marketing

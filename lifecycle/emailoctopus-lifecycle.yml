@@ -1,0 +1,84 @@
+generated: '2026-08-13'
+method: searched
+source: https://emailoctopus.com/api-documentation
+versioning:
+  scheme: key-bound
+  current: v2
+  released: '2024-10-07'
+  docs: https://emailoctopus.com/api-documentation/v2
+  note: >-
+    No version segment appears in the URL. Which version an integration talks to is
+    determined by the API KEY: keys issued before 2024-10-07 are labelled "legacy" and
+    speak v1; keys issued after are described by EmailOctopus as "compatible with all
+    versions of the API". This is an unusual versioning contract and worth flagging —
+    a client cannot tell from the request URL which version it is calling.
+deprecation:
+  policy_url: https://emailoctopus.com/api-documentation
+  sunset_header: false
+  deprecation_header: false
+  sunset_date: null
+  status: >-
+    v1 is declared legacy but is NOT scheduled for shutdown. The v1 reference carries
+    the banner: "This version of the API (v1) is now considered legacy and is no longer
+    actively maintained. We recommend migrating to API v2 for new features,
+    improvements, and ongoing support." The knowledge base adds: "If you're using our
+    legacy API, it will remain working as usual - no action is required from your end."
+  note: >-
+    EmailOctopus publishes a deprecation POSITION (a named legacy version with a
+    documented migration target) but no dated deprecation POLICY, no notice window, and
+    no RFC 8594 Sunset/Deprecation response headers. No Sunset or Deprecation header was
+    present on any live probe.
+  evidence:
+    - url: https://emailoctopus.com/api-documentation
+      http_status: 200
+      kind: legacy-banner
+    - url: https://help.emailoctopus.com/article/94-api-documentation
+      http_status: 200
+      kind: knowledge-base
+sla:
+  url: null
+  uptime_target: null
+  note: No published uptime SLA or availability commitment was found on the pricing, legal, or help surfaces.
+status_page: https://status.emailoctopus.com
+status_page_details:
+  provider: Atlassian Statuspage
+  api: https://status.emailoctopus.com/api/v2/summary.json
+  rss: https://status.emailoctopus.com/history.rss
+  components:
+    - Platform
+  http_status: 200
+  note: >-
+    Machine-readable status is available — the standard Statuspage summary.json and
+    history.rss endpoints both answer 200 anonymously. A single "Platform" component;
+    there is no separate API component to watch.
+deprecated_operations: []
+deprecated_operations_note: >-
+  No operation in the published v2 OpenAPI carries `deprecated: true`.
+legal:
+  terms_of_service: https://emailoctopus.com/legal/terms
+  privacy_policy: https://emailoctopus.com/legal/privacy
+  acceptable_use: https://emailoctopus.com/legal/acceptable-use-policy
+  gdpr: https://emailoctopus.com/legal/gdpr
+  email_delivery_terms: https://emailoctopus.com/legal/email-delivery-terms
+  cookies: https://emailoctopus.com/legal/cookies
+changelog:
+  url: null
+  note: >-
+    No dated developer changelog or release-notes feed was found on emailoctopus.com or
+    help.emailoctopus.com. The only version events EmailOctopus dates publicly are the
+    v2 launch (2024-10-07) and the corresponding API-key cutover, both recorded above.
+    No changelog/ artifact is written for this provider because there is nothing dated
+    to structure.
+x-evidence:
+  - url: https://status.emailoctopus.com
+    http_status: 200
+  - url: https://status.emailoctopus.com/api/v2/summary.json
+    http_status: 200
+  - url: https://emailoctopus.com/api-documentation
+    http_status: 200
+  - url: https://emailoctopus.com/legal/terms
+    http_status: 200
+  - url: https://emailoctopus.com/legal/privacy
+    http_status: 200
+  - url: https://emailoctopus.com/roadmap
+    http_status: 404

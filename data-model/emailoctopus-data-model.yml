@@ -1,0 +1,161 @@
+generated: '2026-08-13'
+method: derived
+source: openapi/_original/emailoctopus-v2-openapi.json
+docs: https://emailoctopus.com/api-documentation/v2
+summary: >-
+  EmailOctopus v2 models a small, list-centric graph. The List is the aggregate root:
+  fields, tags and contacts are all owned by a list and addressed through list-scoped
+  paths (/lists/{list_id}/...), never globally. Campaigns are a parallel root that
+  reference lists as send targets and carry three report projections. Automations are
+  referenced by id only — the API exposes no automation resource, just an enqueue
+  operation. Every identifier is an opaque UUID string with no type prefix.
+identifier_convention:
+  format: uuid
+  prefixed: false
+  note: >-
+    ids are bare UUIDs (e.g. 4637dfa0-b6f0-11ef-acd6-f59b0801e20d). There is no Stripe-
+    style type prefix, so an id is not self-describing — a client must track which
+    resource an id belongs to. Field and tag resources are addressed by their `tag`
+    slug rather than a UUID.
+entities:
+  - name: List
+    schema: List-get
+    root: true
+    path: /lists
+    identifier: id (uuid)
+    attributes: [id, name, double_opt_in, fields, tags, counts, created_at, last_updated_at]
+    operations: [api_lists_get, api_lists_post, api_lists_list_id_get, api_lists_list_id_put, api_lists_list_id_delete]
+  - name: Contact
+    schema: ListContact-get
+    root: false
+    path: /lists/{list_id}/contacts
+    identifier: id (uuid); also addressable by email address on upsert
+    attributes: [id, email_address, fields, tags, status, created_at, last_updated_at]
+    status_values: [pending, subscribed, unsubscribed]
+    operations:
+      - api_lists_list_idcontacts_get
+      - api_lists_list_idcontacts_post
+      - api_lists_list_idcontacts_put
+      - api_lists_list_idcontactsbatch_put
+      - api_lists_list_idcontacts_contact_id_get
+      - api_lists_list_idcontacts_contact_id_put
+      - api_lists_list_idcontacts_contact_id_delete
+  - name: Field
+    schema: ListField
+    root: false
+    path: /lists/{list_id}/fields
+    identifier: tag (slug)
+    attributes: [label, tag, type, choices, fallback]
+    type_values: [text, number, date]
+    operations: [api_lists_list_idfields_post, api_lists_list_idfields_tag_put, api_lists_list_idfields_tag_delete]
+  - name: Tag
+    schema: ListTag
+    root: false
+    path: /lists/{list_id}/tags
+    identifier: tag (slug)
+    attributes: [tag]
+    operations:
+      - api_lists_list_idtags_get
+      - api_lists_list_idtags_post
+      - api_lists_list_idtags_tag_put
+      - api_lists_list_idtags_tag_delete
+  - name: Campaign
+    schema: Campaign-get
+    root: true
+    path: /campaigns
+    identifier: id (uuid)
+    attributes: [id, status, name, subject, to, from, content, created_at, sent_at]
+    status_values: [draft, sending, sent, error]
+    operations: [api_campaigns_get, api_campaigns_campaign_id_get]
+    note: Read-only over the API — campaigns cannot be created, sent or modified through v2.
+  - name: CampaignSummaryReport
+    schema: CampaignSummaryReport
+    root: false
+    path: /campaigns/{campaign_id}/reports/summary
+    identifier: campaign id
+    attributes: [id, sent, bounced, opened, clicked, complained, unsubscribed]
+    operations: [api_campaigns_campaign_idreportssummary_get]
+  - name: CampaignLinkReport
+    schema: CampaignReportLink.collection-get
+    root: false
+    path: /campaigns/{campaign_id}/reports/links
+    identifier: campaign id
+    operations: [api_campaigns_campaign_idreportslinks_get]
+  - name: CampaignContactReport
+    schema: CampaignReportContact.collection-get.report
+    root: false
+    path: /campaigns/{campaign_id}/reports
+    identifier: campaign id + report status
+    operations: [api_campaigns_campaign_idreports_get]
+    note: >-
+      Per-contact engagement rows filtered by a report status (sent, opened, clicked,
+      bounced, complained, unsubscribed and their negations).
+  - name: Automation
+    schema: Automation
+    root: true
+    path: /automations/{automation_id}/queue
+    identifier: id (uuid)
+    attributes: [id, contact_id]
+    operations: [api_automations_automation_idqueue_post]
+    note: >-
+      Write-only stub. There is no GET for automations — the API only lets you enqueue
+      an existing contact into an automation you already know the id of. The automation
+      id must be obtained from the EmailOctopus dashboard.
+relationships:
+  - from: List
+    to: Contact
+    kind: has_many
+    via: path /lists/{list_id}/contacts
+  - from: Contact
+    to: List
+    kind: belongs_to
+    via: list_id path parameter
+  - from: List
+    to: Field
+    kind: has_many
+    via: List-get.fields[] and path /lists/{list_id}/fields
+  - from: List
+    to: Tag
+    kind: has_many
+    via: List-get.tags[] and path /lists/{list_id}/tags
+  - from: Contact
+    to: Field
+    kind: has_many
+    via: ListContact-get.fields object, keyed by the field tag
+  - from: Contact
+    to: Tag
+    kind: has_many
+    via: ListContact-get.tags[] array of tag slugs
+  - from: Campaign
+    to: List
+    kind: has_many
+    via: Campaign-get.to[] (the lists the campaign was sent to)
+  - from: Campaign
+    to: CampaignSummaryReport
+    kind: has_one
+    via: /campaigns/{campaign_id}/reports/summary
+  - from: Campaign
+    to: CampaignLinkReport
+    kind: has_one
+    via: /campaigns/{campaign_id}/reports/links
+  - from: Campaign
+    to: CampaignContactReport
+    kind: has_many
+    via: /campaigns/{campaign_id}/reports
+  - from: Automation
+    to: Contact
+    kind: belongs_to
+    via: Automation.contact_id
+  - from: List
+    to: Automation
+    kind: implicit
+    via: >-
+      Not expressed in the API. Automations are configured against a list in the
+      dashboard, but the v2 contract exposes no link between the two.
+collection_envelope:
+  data: the array of entities
+  paging: cursor object; see conventions/emailoctopus-conventions.yml
+coverage:
+  entities: 9
+  relationships: 12
+  schemas_in_spec: 19

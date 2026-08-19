@@ -1,0 +1,151 @@
+generated: '2026-08-13'
+method: searched
+source: https://emailoctopus.com/api-documentation/v2
+derived_from: openapi/_original/emailoctopus-v2-openapi.json
+format: rfc7807
+format_note: >-
+  EmailOctopus states verbatim in its own API reference: "Error are returned in a
+  standardised format following RFC 7807." Validation failures add an `errors[]`
+  array of `{pointer|parameter, detail}` objects and are described as "a payload
+  formatted according to RFC 9457". The response media type observed on the live API
+  is `application/json`, NOT `application/problem+json` — the envelope follows the
+  RFC but the content type does not, which is worth noting for any client that
+  content-negotiates on problem+json.
+envelope:
+  media_type: application/json
+  fields:
+    - name: type
+      description: Absolute URI naming the problem type; dereferences to the documented section.
+    - name: title
+      description: General error title. Always the literal string "An error occurred."
+    - name: detail
+      description: Human-readable description of this occurrence.
+    - name: status
+      description: HTTP status code, repeated in the body.
+    - name: errors
+      description: >-
+        Present on 422 only. Array of {pointer (JSON Pointer, RFC 6901), parameter
+        (URL parameter name), detail} validation failures.
+  example_probed: |
+    {"title":"An error occurred.","detail":"Invalid key.","status":401,
+     "type":"https://emailoctopus.com/api-documentation/v2#unauthorized"}
+type_uri_scheme: https://emailoctopus.com/api-documentation/v2#<slug>
+problems:
+  - status: 400
+    type: https://emailoctopus.com/api-documentation/v2#bad-request
+    slug: bad-request
+    title: An error occurred.
+    detail: Bad request.
+    remediation: >-
+      The request body is not in the format expected. Check that the request body is
+      valid JSON.
+  - status: 401
+    type: https://emailoctopus.com/api-documentation/v2#unauthorized
+    slug: unauthorized
+    title: An error occurred.
+    detail: Invalid key.
+    remediation: >-
+      The API key provided in the request is either invalid or missing. Ensure you are
+      using the correct API key and that it is included in the Authorization header as
+      a Bearer token. API keys created before 2024-10-07 are labelled legacy and must
+      be regenerated to work with v2.
+    probed: true
+    probe_note: Observed live on GET https://api.emailoctopus.com/lists with an invalid bearer token.
+  - status: 403
+    type: https://emailoctopus.com/api-documentation/v2#access-denied
+    slug: access-denied
+    title: An error occurred.
+    detail: Access denied.
+    remediation: >-
+      You do not have permission to access the requested entity, such as trying to get
+      the contacts in a list belonging to another account. Check that the API key
+      belongs to the account you are trying to access — verify by comparing the last
+      four characters of the key against the account's API keys.
+  - status: 404
+    type: https://emailoctopus.com/api-documentation/v2#not-found
+    slug: not-found
+    title: An error occurred.
+    detail: Resource not found.
+    remediation: >-
+      The resource could not be found, typically from an invalid list ID or contact ID.
+      Double-check the resource identifiers against your EmailOctopus account.
+    probed: true
+    probe_note: Observed live on GET https://api.emailoctopus.com/nonexistent-xyz.
+  - status: 405
+    type: https://emailoctopus.com/api-documentation/v2#method-not-allowed
+    slug: method-not-allowed
+    title: An error occurred.
+    remediation: >-
+      The HTTP method used is not supported for that endpoint (for example POST on a
+      GET-only endpoint). Check the reference for the methods each operation allows.
+  - status: 409
+    type: https://emailoctopus.com/api-documentation/v2#already-exists
+    slug: already-exists
+    title: An error occurred.
+    remediation: >-
+      You are creating an entity that already exists (a duplicate tag on a list, or a
+      contact already on the list). Check before creating, or use the upsert endpoint
+      api_lists_list_idcontacts_put (create or update contact) which updates when the
+      entity exists and creates when it does not.
+  - status: 409
+    type: https://emailoctopus.com/api-documentation/v2#conflict
+    slug: conflict
+    title: An error occurred.
+    remediation: This request conflicts with the system state. EmailOctopus asks you to contact support.
+  - status: 415
+    type: https://emailoctopus.com/api-documentation/v2#unsupported-media-type
+    slug: unsupported-media-type
+    title: An error occurred.
+    remediation: >-
+      Requests carrying a JSON body must set Content-Type: application/json.
+  - status: 422
+    type: https://emailoctopus.com/api-documentation/v2#unprocessable-content
+    slug: unprocessable-content
+    title: An error occurred.
+    detail: Unprocessable content.
+    remediation: >-
+      The JSON payload does not meet the required criteria. Read the errors[] array —
+      each entry carries a JSON Pointer to the offending attribute and a description
+      (e.g. {"detail":"This value should not be blank.","pointer":"/email_address"}).
+    has_errors_array: true
+  - status: 422
+    type: https://emailoctopus.com/api-documentation/v2#out-of-limits
+    slug: out-of-limits
+    title: An error occurred.
+    remediation: >-
+      Executing this operation would exceed your plan limits. See the pricing
+      comparison for the subscriber and send limits attached to each tier.
+  - status: 429
+    type: https://emailoctopus.com/api-documentation/v2#too-many-requests
+    slug: too-many-requests
+    title: An error occurred.
+    remediation: >-
+      Your account exceeded the rate limit. Use the X-RateLimit-Retry-After response
+      header to determine when to retry. See rate-limits/emailoctopus-rate-limits.yml.
+    retry_header: X-RateLimit-Retry-After
+  - status: 500
+    type: https://emailoctopus.com/api-documentation/v2#internal-error
+    slug: internal-error
+    title: An error occurred.
+    remediation: >-
+      The API hit an unexpected internal condition. EmailOctopus is notified via their
+      internal tracking; retrying after some time may resolve it.
+coverage:
+  documented_problem_types: 12
+  operations_with_error_responses: 25
+  status_codes_in_spec: [400, 401, 403, 404, 409, 422]
+  note: >-
+    Every one of the 25 operations in the published OpenAPI declares 400/401 error
+    responses with an enumerated `type` value, and path-scoped operations add
+    403/404; write operations add 409/422. 405, 415, 429 and 500 are documented in the
+    reference prose but are not enumerated per-operation in the spec.
+x-evidence:
+  - url: https://emailoctopus.com/api-documentation/v2
+    http_status: 200
+    kind: api-reference-and-openapi
+  - url: https://api.emailoctopus.com/nonexistent-xyz
+    http_status: 404
+    kind: live-probe
+  - url: https://api.emailoctopus.com/lists
+    http_status: 401
+    kind: live-probe

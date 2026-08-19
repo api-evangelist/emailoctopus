@@ -1,0 +1,203 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "EmailOctopus v2 Automation Contact API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Contact",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/lists/:list_id/contacts",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records to return per page."
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for pagination; the ID of the last record on the previous page."
+              }
+            ]
+          },
+          "docs": "Get contacts"
+        },
+        {
+          "info": {
+            "name": "Create contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.emailoctopus.com/lists/:list_id/contacts",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create contact"
+        },
+        {
+          "info": {
+            "name": "Create or update contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/:list_id/contacts",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a contact, or updates it if a contact with the supplied email address already exists on the list."
+        },
+        {
+          "info": {
+            "name": "Update multiple list contacts",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/:list_id/contacts/batch",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update multiple list contacts"
+        },
+        {
+          "info": {
+            "name": "Get contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.emailoctopus.com/lists/:list_id/contacts/:contact_id",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              },
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the contact (a UUID or the MD5 hash of the lowercased email)."
+              }
+            ]
+          },
+          "docs": "Get contact"
+        },
+        {
+          "info": {
+            "name": "Update contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.emailoctopus.com/lists/:list_id/contacts/:contact_id",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              },
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the contact (a UUID or the MD5 hash of the lowercased email)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update contact"
+        },
+        {
+          "info": {
+            "name": "Delete contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.emailoctopus.com/lists/:list_id/contacts/:contact_id",
+            "params": [
+              {
+                "name": "list_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the list."
+              },
+              {
+                "name": "contact_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the contact (a UUID or the MD5 hash of the lowercased email)."
+              }
+            ]
+          },
+          "docs": "Delete contact"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

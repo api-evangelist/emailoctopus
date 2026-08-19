@@ -1,0 +1,80 @@
+generated: '2026-08-13'
+method: searched
+source: https://help.emailoctopus.com/article/251-how-to-add-the-form-code-to-my-website
+docs: https://help.emailoctopus.com/category/216-forms-and-landing-pages
+summary: >-
+  EmailOctopus ships client-side embeddable surfaces that are entirely separate from its
+  REST API: a per-form JavaScript loader you paste into your own site, and fully hosted
+  landing pages and forms served from EmailOctopus domains. These are the provider's
+  only browser-side building blocks — there is no component library, no web-component
+  package, and no embedded dashboard.
+families:
+  - name: Embedded sign-up forms
+    kind: script-loader
+    description: >-
+      Forms designed in the EmailOctopus dashboard and hosted on the customer's own
+      website. "Add to your website" generates a snippet of the shape
+      <script async src="https://eocampaign1.com/form/{form_id}.js" data-form="{form_id}"></script>.
+      Each form gets its own loader URL keyed to the form id.
+    formats:
+      - inline
+      - pop-up
+      - slide-in
+      - hello bar
+    loader:
+      registry: cdn
+      host: eocampaign1.com
+      url_pattern: https://eocampaign1.com/form/{form_id}.js
+      version: null
+      version_note: >-
+        The loader URL carries a form identifier, not a version. It is unpinned and
+        floats to whatever EmailOctopus currently serves, so a consumer cannot tell which
+        build they are embedding — recorded as null rather than guessed. There is no CDN
+        metadata endpoint (jsDelivr/unpkg) for it because it is not an npm package.
+      integrity_attribute: false
+    configuration:
+      - Optional title, field selection and rewards link.
+      - Optional redirect to a URL after signup instead of a thank-you message.
+  - name: Hosted landing pages
+    kind: hosted-surface
+    description: >-
+      Standalone landing pages designed in EmailOctopus and served on EmailOctopus-owned
+      domains rather than embedded in the customer's site. Plan-limited: 1 on the free
+      Starter plan, unlimited on Pro.
+    hosts:
+      - eo.page
+    embed: none
+  - name: Campaign content surfaces
+    kind: hosted-surface
+    description: >-
+      Campaign click/open tracking and hosted campaign views are served from a rotating
+      set of EmailOctopus sending domains. Named here because they appear in the site's
+      own Content-Security-Policy frame-src allowlist and are the hosts an integrator will
+      see in links.
+    hosts:
+      - eocampaign.com
+      - eocampaign1.com
+      - eomail1.com
+      - eomail2.com
+      - eomail3.com
+      - eomail4.com
+      - eomail5.com
+      - eomail6.com
+      - eomail7.com
+      - eomail8.com
+    embed: none
+    source_note: >-
+      Host list read verbatim from the content-security-policy response header on
+      https://api.emailoctopus.com (frame-src directive), observed 2026-08-13.
+not_present:
+  - A published web-component or React/Vue component package.
+  - An npm-distributed embed SDK (no @emailoctopus scope exists on npm).
+  - An embedded analytics/dashboard component.
+x-evidence:
+  - url: https://help.emailoctopus.com/article/251-how-to-add-the-form-code-to-my-website
+    http_status: 200
+  - url: https://help.emailoctopus.com/article/33-forms
+    http_status: 200
+  - url: https://api.emailoctopus.com/lists
+    http_status: 401
+    kind: csp-header-observation

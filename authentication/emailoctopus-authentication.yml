@@ -1,13 +1,72 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/emailoctopus-openapi.yml
+generated: '2026-08-13'
+method: searched
+source: openapi/_original/emailoctopus-v2-openapi.json
+docs: https://emailoctopus.com/api-documentation/v2
 summary:
   types:
   - http
+  api_key_in: []
+  oauth2_flows: []
+  schemes_count: 1
+  global_security: true
+model: >-
+  A single account-wide API key presented as an HTTP Bearer token. There is no OAuth, no
+  OIDC, no scope model, no key rotation API and no per-key permission surface — one key
+  grants full access to everything in the account it belongs to. The scheme is applied
+  globally in the spec (top-level `security: [{api_key: []}]`), so every one of the 25
+  operations requires it; none are public.
 schemes:
 - name: api_key
   type: http
   scheme: bearer
-  description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create
+  in: header
+  header: Authorization
+  format: 'Bearer {token}'
+  description: >-
+    Bearer API key in the Authorization header. Verbatim from the spec: "You can obtain
+    your API key at https://api.emailoctopus.com/developer/api-keys/create".
+  key_creation_url: https://api.emailoctopus.com/developer/api-keys/create
+  key_management_docs: https://help.emailoctopus.com/article/94-api-documentation
   sources:
-  - openapi/emailoctopus-openapi.yml
+  - openapi/_original/emailoctopus-v2-openapi.json
+  - openapi/emailoctopus-list-api-openapi.yml
+  - openapi/emailoctopus-contact-api-openapi.yml
+  - openapi/emailoctopus-campaign-api-openapi.yml
+  - openapi/emailoctopus-tag-api-openapi.yml
+  - openapi/emailoctopus-field-api-openapi.yml
+  - openapi/emailoctopus-automation-api-openapi.yml
+key_versioning:
+  legacy_cutover: '2024-10-07'
+  note: >-
+    API keys minted before the v2 launch on 2024-10-07 are labelled "legacy" in the
+    dashboard and DO NOT authenticate against v2 — the API answers `401` with
+    `"Invalid key."` and type `#unauthorized`. Keys created after that date are described
+    by EmailOctopus as "compatible with all versions of the API". This makes the API key
+    the de facto version selector, since the URL carries no version segment.
+scopes:
+  supported: false
+  note: >-
+    No scope or permission model exists, so scopes/ is intentionally absent from this repo
+    rather than written as an empty artifact.
+failure_modes:
+  - status: 401
+    type: https://emailoctopus.com/api-documentation/v2#unauthorized
+    meaning: Key missing, malformed, or legacy (pre-2024-10-07).
+    probed: true
+  - status: 403
+    type: https://emailoctopus.com/api-documentation/v2#access-denied
+    meaning: >-
+      Valid key, wrong account. EmailOctopus's documented check is to compare the last four
+      characters of the key against the keys listed on the target account.
+webhook_authentication:
+  direction: inbound
+  mechanism: HMAC-SHA256 over the raw request body, hex, prefixed "sha256="
+  header: EmailOctopus-Signature
+  note: Separate from API-key auth; see asyncapi/emailoctopus-webhooks.yml.
+x-evidence:
+  - url: https://emailoctopus.com/api-documentation/v2
+    http_status: 200
+    kind: openapi-and-reference
+  - url: https://api.emailoctopus.com/lists
+    http_status: 401
+    kind: live-probe-no-credential

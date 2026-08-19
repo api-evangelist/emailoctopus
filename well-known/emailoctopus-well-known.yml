@@ -1,0 +1,57 @@
+generated: '2026-08-13'
+method: probed
+source: live probe of /.well-known/* on every EmailOctopus host in apis.yml
+result: none
+note: >-
+  Every /.well-known/ path was probed on both the API host and the website host and
+  every one returned 404. No WellKnown or SecurityTxt pointer is wired into apis.yml
+  — this file records a verified ABSENCE, not a surface. The website host answers
+  404s with a Next.js HTML error shell, so a 200 on any of these paths would still
+  need a body check; none returned 200.
+hosts:
+  - host: https://api.emailoctopus.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        content_type: application/json
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        content_type: application/json
+      - path: /.well-known/agent-card.json
+        status: 404
+        content_type: application/json
+      - path: /.well-known/agent.json
+        status: 404
+        content_type: application/json
+  - host: https://emailoctopus.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        content_type: text/html
+      - path: /.well-known/openid-configuration
+        status: 404
+        content_type: text/html
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        content_type: text/html
+      - path: /.well-known/api-catalog
+        status: 404
+        content_type: text/html
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        content_type: text/html
+      - path: /.well-known/agent-card.json
+        status: 404
+        content_type: text/html
+      - path: /.well-known/agent.json
+        status: 404
+        content_type: text/html
+x-evidence:
+  fetched: '2026-08-13'
+  probes: 11
+  hits: 0
+observation: >-
+  The one /.well-known/ reference EmailOctopus does emit is a Content-Location
+  response header on the OpenAPI document
+  (//api.emailoctopus.com/.well-known/genid/f90a631f51c14cc0d3ce.json), which is a
+  content-addressed generated identifier, not a discoverable well-known document.

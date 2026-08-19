@@ -1,0 +1,143 @@
+generated: '2026-08-13'
+method: searched
+source: https://emailoctopus.com/api-documentation/v2
+derived_from: openapi/_original/emailoctopus-v2-openapi.json
+summary: >-
+  EmailOctopus v2 is a conventional resource-oriented REST API on a single host with
+  no version segment in the path. Bearer API key auth, JSON in and out, RFC 7807
+  error envelope, cursor pagination, token-bucket rate limiting with a remaining-token
+  response header, and HMAC-signed webhooks. It publishes no idempotency-key contract
+  and no request-id tracing header.
+
+authentication:
+  style: http-bearer
+  header: Authorization
+  format: 'Bearer {token}'
+  key_creation: https://api.emailoctopus.com/developer/api-keys/create
+  scopes: none
+  note: >-
+    A single account-wide API key; there is no OAuth surface and no scope model, so
+    scopes/ is intentionally absent from this repo. Keys created before 2024-10-07 are
+    labelled "legacy" and do not authenticate against v2 — a new key must be generated.
+  cross_ref: authentication/emailoctopus-authentication.yml
+
+idempotency:
+  supported: false
+  idempotency_key_header: null
+  note: >-
+    EmailOctopus documents NO idempotency-key mechanism. There is no Idempotency-Key
+    header, no client-supplied request key, and no replay window anywhere in the v2
+    reference or the OpenAPI. The only safe-retry affordance is HTTP-native: the
+    upsert endpoint PUT /lists/{list_id}/contacts (api_lists_list_idcontacts_put)
+    creates or updates by email address, so replaying it converges rather than
+    duplicating, and the reference explicitly recommends it as the fix for the
+    already-exists (409) error. That is method semantics, not an idempotency contract —
+    a replayed POST /lists/{list_id}/contacts will still 409. No `Idempotency`
+    pointer is wired into apis.yml for this provider.
+  safe_retry_operations:
+    - api_lists_list_idcontacts_put
+    - api_lists_list_idcontactsbatch_put
+    - api_lists_list_id_put
+    - api_lists_list_idfields_tag_put
+    - api_lists_list_idtags_tag_put
+
+pagination:
+  style: cursor
+  default_page_size: 100
+  max_page_size: 100
+  request_parameters:
+    - name: limit
+      in: query
+      description: Maximum results per page. Responses contain a maximum of 100 results.
+    - name: starting_after
+      in: query
+      description: >-
+        Opaque cursor taken verbatim from paging.next.starting_after of the previous
+        response. The docs warn that the cursor must not be deconstructed — its
+        implementation is subject to change.
+  response_fields:
+    collection: data
+    paging: paging
+    next_url: paging.next.url
+    next_cursor: paging.next.starting_after
+  note: >-
+    Collection responses wrap results in `data` and carry a `paging` object with a
+    `next` containing both a ready-to-follow absolute URL and the raw cursor.
+
+filtering_and_expansion:
+  field_expansion: false
+  sparse_fieldsets: false
+  note: >-
+    No `expand` or sparse-fieldset mechanism is documented. Related entities are
+    fetched through their own sub-resource paths (e.g. /lists/{list_id}/contacts).
+
+metadata:
+  custom_fields: true
+  note: >-
+    Per-list custom fields are a first-class resource (POST/PUT/DELETE
+    /lists/{list_id}/fields), and contact records carry a `fields` object keyed by
+    field tag. Tags are a separate first-class resource on the list. There is no
+    generic free-form `metadata` bag on API objects.
+
+request_tracing:
+  request_id_header: null
+  note: >-
+    No request-id / correlation-id response header is documented, and none was observed
+    on live 401/404 probes. The only per-request identifiers on the wire are
+    Cloudflare's cf-ray and the NEL/report-to reporting headers, which are edge
+    artifacts rather than an EmailOctopus tracing contract.
+
+versioning:
+  scheme: none-in-path
+  current: v2
+  note: >-
+    The base URL carries no version segment — v2 operations are served at
+    https://api.emailoctopus.com/lists, not /v2/lists. Version selection is bound to
+    the API KEY: keys minted before the 2024-10-07 v2 launch are legacy and route to
+    v1 semantics; new keys are described as "compatible with all versions of the API".
+    The v1 reference at https://emailoctopus.com/api-documentation carries a legacy
+    banner. Documentation lives at https://emailoctopus.com/api-documentation/v2.
+  cross_ref: lifecycle/emailoctopus-lifecycle.yml
+
+error_envelope:
+  format: rfc7807
+  media_type: application/json
+  validation_format: rfc9457
+  fields: [type, title, detail, status, errors]
+  type_uri_dereferences: true
+  cross_ref: errors/emailoctopus-problem-types.yml
+
+rate_limit_signaling:
+  algorithm: token-bucket
+  bucket_size: 100
+  refill_rate_per_second: 10
+  remaining_header: X-RateLimiting-Remaining
+  retry_header: X-RateLimit-Retry-After
+  exhausted_status: 429
+  note: >-
+    Header names are quoted as EmailOctopus publishes them and are inconsistent between
+    the two documented headers (X-RateLimiting-Remaining vs X-RateLimit-Retry-After).
+    Neither header appeared on unauthenticated 401 probes, so they are recorded as
+    documented rather than observed.
+  cross_ref: rate-limits/emailoctopus-rate-limits.yml
+
+events:
+  webhooks: true
+  signature_header: EmailOctopus-Signature
+  cross_ref: asyncapi/emailoctopus-webhooks.yml
+
+content_negotiation:
+  request_content_type: application/json
+  note: >-
+    Requests carrying a JSON body must set Content-Type: application/json or the API
+    returns unsupported-media-type (415). The v1 API also accepted form parameters;
+    v2 is JSON-only.
+
+x-evidence:
+  - url: https://emailoctopus.com/api-documentation/v2
+    http_status: 200
+  - url: https://help.emailoctopus.com/article/91-api-limits
+    http_status: 200
+  - url: https://api.emailoctopus.com/lists
+    http_status: 401
+    kind: live-probe-headers

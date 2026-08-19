@@ -1,0 +1,47 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "EmailOctopus v2 Automation API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Automation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Start an automation for a contact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.emailoctopus.com/automations/:automation_id/queue",
+            "params": [
+              {
+                "name": "automation_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the automation."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Start an automation for a contact"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

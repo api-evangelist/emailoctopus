@@ -1,0 +1,113 @@
+generated: '2026-08-13'
+method: derived
+source: openapi/_original/emailoctopus-v2-openapi.json
+docs: https://emailoctopus.com/api-documentation/v2
+note: >-
+  Standards assertions derived from the provider's published OpenAPI 3.1.0 and its own
+  API reference prose, plus live probes. No `Compliance` pointer is wired into apis.yml:
+  EmailOctopus publishes no trust center and names no certification (SOC 2, ISO 27001,
+  PCI DSS, HIPAA, FedRAMP) on any public page probed. GDPR is addressed as a legal
+  commitment page, not an audited certification.
+standards:
+  - id: openapi-3.1
+    conforms: true
+    evidence: >-
+      Provider-published OpenAPI 3.1.0 served at https://emailoctopus.com/api-documentation/v2
+      (Content-Type application/json), 15 paths / 25 operations, all tagged with unique
+      operationIds and enumerated error responses.
+  - id: rfc7807-problem-details
+    conforms: true
+    evidence: >-
+      The reference states verbatim "Error are returned in a standardised format
+      following RFC 7807." Probed live: 401 and 404 responses carry
+      {type, title, detail, status}.
+    deviation: >-
+      Responses are served as application/json, not application/problem+json, so a client
+      negotiating on the problem media type will not match.
+  - id: rfc9457-problem-details
+    conforms: partial
+    evidence: >-
+      422 validation responses add an errors[] array of {pointer, parameter, detail}
+      objects, which the docs describe as "formatted according to RFC 9457".
+    deviation: Same media-type deviation as RFC 7807.
+  - id: rfc6901-json-pointer
+    conforms: true
+    evidence: >-
+      422 validation errors identify the offending attribute with a JSON Pointer in the
+      `pointer` field, described in the spec as "A JSON Pointer [RFC6901] to the value in
+      the request document that caused the error."
+  - id: http-bearer-auth
+    conforms: true
+    evidence: components.securitySchemes.api_key = {type http, scheme bearer}, applied globally via security[].
+  - id: oauth2
+    conforms: false
+    evidence: No oauth2 security scheme in the spec; no OAuth surface documented. scopes/ is intentionally absent.
+  - id: oidc
+    conforms: false
+    evidence: /.well-known/openid-configuration returned 404 on emailoctopus.com.
+  - id: cursor-pagination
+    conforms: true
+    evidence: >-
+      limit + starting_after query parameters with an opaque cursor returned in
+      paging.next.starting_after; documented and present in the spec.
+  - id: idempotency
+    conforms: false
+    evidence: >-
+      No Idempotency-Key header or client request key documented anywhere in the v2
+      reference or the OpenAPI. Only HTTP-native PUT upsert semantics.
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: >-
+      No Sunset or Deprecation response header observed on live probes; the v1 legacy
+      notice is prose only, with no dated shutdown.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt returned 404 on both api.emailoctopus.com and emailoctopus.com.
+  - id: rfc8615-well-known
+    conforms: false
+    evidence: All 11 /.well-known/* probes returned 404. See well-known/emailoctopus-well-known.yml.
+  - id: asyncapi
+    conforms: false
+    evidence: >-
+      A real webhook event surface exists (8 event types, HMAC-SHA256 signed) but no
+      AsyncAPI document is published. See asyncapi/emailoctopus-webhooks.yml.
+  - id: webhook-hmac-signing
+    conforms: true
+    evidence: >-
+      EmailOctopus-Signature header, HMAC-SHA256 over the raw request body with a
+      per-webhook secret, prefixed "sha256=".
+  - id: gdpr
+    conforms: claimed
+    evidence: >-
+      Dedicated GDPR page published at https://emailoctopus.com/legal/gdpr (HTTP 200), plus
+      a privacy policy and email delivery terms. This is a stated legal position, not an
+      audited certification — recorded as `claimed`, not `true`.
+  - id: soc2
+    conforms: false
+    evidence: No SOC 2 claim found; no trust center exists (trust.emailoctopus.com does not resolve).
+  - id: iso-27001
+    conforms: false
+    evidence: No ISO 27001 claim found on any probed page.
+  - id: pci-dss
+    conforms: false
+    evidence: Not applicable — EmailOctopus does not process cardholder data through its API.
+  - id: hipaa
+    conforms: false
+    evidence: No HIPAA claim; EmailOctopus is not positioned for PHI.
+  - id: json-api
+    conforms: false
+    evidence: Custom data/paging envelope, not JSON:API.
+  - id: tls
+    conforms: true
+    evidence: See security/emailoctopus-domain-security.yml — HTTPS enforced on both hosts.
+x-evidence:
+  - url: https://emailoctopus.com/api-documentation/v2
+    http_status: 200
+  - url: https://emailoctopus.com/legal/gdpr
+    http_status: 200
+  - url: https://emailoctopus.com/.well-known/security.txt
+    http_status: 404
+  - url: https://emailoctopus.com/.well-known/openid-configuration
+    http_status: 404
+  - url: https://emailoctopus.com/security
+    http_status: 404

@@ -1,214 +1,811 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
-  title: EmailOctopus v2 Automation Campaign API
-  description: The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.
-  termsOfService: https://emailoctopus.com/terms
-  contact:
-    name: EmailOctopus Support
-    url: https://help.emailoctopus.com
-  version: '2.0'
+  title: EmailOctopus v2 Campaign API
+  description: "# Introduction\n\nThe EmailOctopus API allows you to manage resources and perform actions within the platform\
+    \ programmatically. You'll need to <a href=\"https://emailoctopus.com/account/sign-up\" target=\"_blank\">create an account</a>\
+    \ before using the API, if you don't already have one.\n\nThe API is designed around <a href=\"https://en.wikipedia.org/wiki/REST\"\
+    \ target=\"_blank\">REST</a> principles. It has a predictable URL structure based on resources, accepts <a href=\"https://www.json.org/json-en.html\"\
+    \ target=\"_blank\">JSON-encoded</a> request bodies, returns JSON-encoded responses and uses standard HTTP response codes,\
+    \ authentication and verbs.\n\nThe base URL for the API is https://api.emailoctopus.com.\n\n# Authentication\nTo use the\
+    \ API, you'll need to generate an API key. You can do this in your <a href=\"https://emailoctopus.com/developer/api-keys\"\
+    \ target=\"_blank\">account settings</a>. If you have an API key created prior to the release of API v2 (labelled 'legacy')\
+    \ you'll need to generate a new API key. New API keys are compatible with all versions of the API.\n\nThe API uses bearer\
+    \ authentication to authenticate requests. Authenticate your request by including the following header:\n```\nAuthorization:\
+    \ Bearer {token}\n```\n\nFor example, using curl:\n```\ncurl https://api.emailoctopus.com/lists/ -H \"Authorization: Bearer\
+    \ {token}\"\n```\n\nIf you see a JSON-formatted response with your list details, that's great! That means you can connect\
+    \ to the API, and your authentication token works.\n\nIf you encounter a JSON error response, refer to the `type` field\
+    \ for a link to detailed documentation. For non-JSON errors, the request likely didn't reach the server. In that case,\
+    \ double-check the URL and verify that your request is correctly formatted.\n\n# Rate limiting\nRequests to the API are\
+    \ subject to a rate limit, which is implemented using the <a href=\"https://en.wikipedia.org/wiki/Token_bucket\" target=\"\
+    _blank\">token bucket algorithm</a>. Each request consumes one token and your bucket holds up to 100 tokens. Tokens are\
+    \ replenished at a rate of 10 per second. To check your remaining tokens, refer to the `X-RateLimiting-Remaining` header\
+    \ in the response.\n\nThis system enables a steady request rate of up to 10 per second or a burst of up to 100 requests\
+    \ in a single instance if needed.\n\nIf your account exceeds the rate limit, the request will return a [429 HTTP status\
+    \ code](https://emailoctopus.com/api-documentation/v2#too-many-requests).\n\n# Pagination\nWhen you request a collection\
+    \ of entities, such as contacts belonging to a list, the data will be paginated rather than returned all at once. Each\
+    \ response will contain a maximum of 100 results in the `data` attribute.\n\nPagination information is included in the\
+    \ response `paging` attribute. This data will contain `next` attributes, with a URL and a `starting_after` cursor. The\
+    \ cursor serves as a link to the next page. You can use the cursor as a `starting_after` query string parameter to navigate\
+    \ to the next page or follow the provided URL in the JSON structure.\n\nHere's an example of what the `paging` attribute\
+    \ looks like:\n```\n\"paging\": {\n    \"next\": {\n        \"url\": \"https://api.emailoctopus.com/lists/{list_id}/contacts?starting_after=WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0&limit=100\"\
+    ,\n        \"starting_after\": \"WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0\"\
+    \n    }\n }\n```\nYou can add the cursor to your request URL by including the `starting_after` query string parameter,\
+    \ like this:\n```\nhttps://api.emailoctopus.com/lists/{list_id}/contacts?starting_after=WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0\n\
+    ```\n\nThe cursor should always be provided exactly as it was returned in a previous request. Avoid deconstructing the\
+    \ cursor and relying on any data inside it, as the implementation of the cursor is subject to change.\n\n# Errors\nError\
+    \ are returned in a standardised format following <a href=\"https://datatracker.ietf.org/doc/html/rfc7807\" target=\"\
+    _blank\">RFC 7807</a>. For example:\n\n```\n{\n    \"title\": \"An error occurred.\",\n    \"detail\": \"Bad request.\"\
+    ,\n    \"status\": 400,\n    \"type\": \"https://emailoctopus.com/api-documentation/v2#bad-request\"\n}\n```\n\nYou can\
+    \ use the `type` value to navigate to the documentation for more details about the specific error.\n\nYou may also encounter\
+    \ validation errors, which will return a 422 HTTP status code and a payload formatted according to <a href=\"https://www.rfc-editor.org/rfc/rfc9457.html\"\
+    \ target=\"_blank\">RFC 9457</a>.\n```\n{\n    \"title\": \"An error occurred.\",\n    \"detail\": \"Unprocessable content.\"\
+    ,\n    \"status\": 422,\n    \"errors\": [\n         {\n            \"detail\": \"This value should not be blank.\",\n\
+    \            \"pointer\": \"/email_address\"\n         }\n    ],\n    \"type\": \"https://emailoctopus.com/api-documentation/v2#unprocessable-content\"\
+    \n}\n```\n\nIn the following sections, you can find more information about each type of error.\n\n## access-denied\nYou\
+    \ do not have permission to access the requested entity, such as trying to get the contacts in a list belonging to another\
+    \ account.\n\nCheck that the API key you're using belongs to the account you're trying to access data in. You can verify\
+    \ this by navigating to the account's <a href=\"https://emailoctopus.com/developer/api-keys\" target=\"_blank\">API keys</a>\
+    \ and checking there's a key ending in the same four characters.\n\n## already-exists\nYou are attempting to create an\
+    \ entity that already exists, such as creating a tag on a list that already contains that tag, or adding a contact to\
+    \ a list that already includes that contact.\n\nYou can fix this by checking if the entity already exists before you attempt\
+    \ to create it. Or you may wish to handle the error gracefully in your code and update the existing resource when a duplicate\
+    \ is spotted.\n\nSome endpoints, such as the [create or update contact](#tag/Contact/operation/api_lists_list_idcontacts_put)\
+    \ endpoint, support an *upsert* operation. An upsert allows you to either update the entity if it exists or create a new\
+    \ one if it doesn't. Consider using this feature where applicable.\n\n## bad-request\nThe request body is not in the format\
+    \ expected. Check that the request body is valid JSON.\n\n## conflict\nThis request conflicts with the system state. <a\
+    \ href=\"https://help.emailoctopus.com/category/20-getting-in-touch\" target=\"_blank\">Get in touch</a> if you require\
+    \ further assistance.\n\n## internal-error\nThis error is returned when the API encounters an unexpected condition or\
+    \ an internal issue on the server. If you receive this error, it is probably not an issue with your request.\n\nIn some\
+    \ cases, retrying the request after some time may resolve the issue. We'll always be notified of the error via our internal\
+    \ tracking tools, but if the problem persists, <a href=\"https://help.emailoctopus.com/category/20-getting-in-touch\"\
+    \ target=\"_blank\">get in touch</a> with details about the error and we'll investigate.\n\n## not-found\nThe resource\
+    \ you're trying to access or modify could not be found. This error is typically caused by using an invalid or incorrect\
+    \ identifier, such as a list ID or contact ID that doesn't exist in your account.\n\nDouble-check the resource identifiers\
+    \ you're using in your request, and ensure they match the actual resources in your EmailOctopus account.\n\n## out-of-limits\n\
+    Executing this operation would cause you to exceed your plan limits. See our <a href=\"https://emailoctopus.com/pricing#comparison\"\
+    \ target=\"_blank\">pricing comparison</a> for further details on these limits.\n\n## unauthorized\nThe API key provided\
+    \ in the request is either invalid or missing. Ensure that you're using the correct API key and that it is included in\
+    \ the request header as shown in the [authentication section](/api-documentation/v2#section/Authentication).\n\n## unprocessable-content\n\
+    The JSON payload in your request body doesn't meet the required criteria. Check the errors attribute for details on the\
+    \ specific issues. It will include a pointer to the problematic attribute and an error description.\n\n## unsupported-media-type\n\
+    When making requests that require a JSON payload in the body, you must specify a `Content-Type` of `application/json`.\n\
+    \n## too-many-requests\nYour account has exceeded the rate limit. You can use the `X-RateLimit-Retry-After` header to\
+    \ determine when to make another request. See the [rate limiting section](/api-documentation/v2#section/Rate-limiting)\
+    \ section for further details.\n\n## method-not-allowed\nThe HTTP method used in your request is not supported for the\
+    \ endpoint you are trying to access. For example, attempting to use a POST method on an endpoint that only supports GET.\n\
+    \nCheck the API documentation for the correct methods allowed for each endpoint. Ensure your request uses one of the supported\
+    \ methods (e.g., GET, POST, PUT, DELETE) for the specific operation you want to perform.\n"
+  version: 2.0.0
 servers:
 - url: https://api.emailoctopus.com
+  description: ''
 security:
 - api_key: []
 tags:
 - name: Campaign
+  description: 'A campaign is generally used to send a one-off, timely email to some or all of your subscribers. For example
+    you may use a campaign to send the latest edition of your weekly newsletter, or to announce a new feature in your product.
+
+    '
 paths:
   /campaigns:
     get:
-      operationId: getAllCampaigns
+      operationId: api_campaigns_get
       tags:
       - Campaign
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign.collection'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
       summary: Get all campaigns
+      description: ''
       parameters:
-      - $ref: '#/components/parameters/Limit'
-      - $ref: '#/components/parameters/StartingAfter'
-      responses:
-        '200':
-          description: A paged collection of campaigns.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CampaignCollection'
+      - name: limit
+        in: query
+        description: Max number of results per page.
+        required: false
+        deprecated: false
+        schema:
+          type: integer
+          default: '100'
+        style: form
+        explode: true
+        example: '100'
+      - name: starting_after
+        in: query
+        description: Cursor that points to the end of the page.
+        required: false
+        deprecated: false
+        schema:
+          type: string
+        style: form
+        explode: true
+        example: WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0
   /campaigns/{campaign_id}:
-    parameters:
-    - $ref: '#/components/parameters/CampaignId'
     get:
-      operationId: getCampaign
+      operationId: api_campaigns_campaign_id_get
       tags:
       - Campaign
-      summary: Get campaign
       responses:
         '200':
-          description: The requested campaign.
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Campaign'
-  /campaigns/{campaign_id}/reports/summary:
-    parameters:
-    - $ref: '#/components/parameters/CampaignId'
+                $ref: '#/components/schemas/Campaign-get'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+      summary: Get campaign
+      description: ''
+      parameters:
+      - name: campaign_id
+        in: path
+        description: The ID of the campaign.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+  /campaigns/{campaign_id}/reports:
     get:
-      operationId: getCampaignSummaryReport
+      operationId: api_campaigns_campaign_idreports_get
       tags:
       - Campaign
-      summary: Campaign summary report
       responses:
         '200':
-          description: A summary report of the campaign's performance.
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignReportContact.collection-get.report'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+      summary: Campaign contact reports
+      description: ''
+      parameters:
+      - name: campaign_id
+        in: path
+        description: The ID of the campaign.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+      - name: limit
+        in: query
+        description: Max number of results per page.
+        required: false
+        deprecated: false
+        schema:
+          type: integer
+          default: '100'
+        style: form
+        explode: true
+        example: '100'
+      - name: starting_after
+        in: query
+        description: Cursor that points to the end of the page.
+        required: false
+        deprecated: false
+        schema:
+          type: string
+        style: form
+        explode: true
+        example: WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0
+      - name: status
+        in: query
+        description: The status of the report.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+          enum:
+          - bounced
+          - clicked
+          - complained
+          - opened
+          - sent
+          - unsubscribed
+          - not-opened
+          - not-clicked
+        style: form
+        explode: true
+        example: bounced
+  /campaigns/{campaign_id}/reports/links:
+    get:
+      operationId: api_campaigns_campaign_idreportslinks_get
+      tags:
+      - Campaign
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignReportLink.collection-get'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+      summary: Campaign links report
+      description: ''
+      parameters:
+      - name: campaign_id
+        in: path
+        description: The ID of the campaign.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+  /campaigns/{campaign_id}/reports/summary:
+    get:
+      operationId: api_campaigns_campaign_idreportssummary_get
+      tags:
+      - Campaign
+      responses:
+        '200':
+          description: Successful response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CampaignSummaryReport'
-  /campaigns/{campaign_id}/reports/links:
-    parameters:
-    - $ref: '#/components/parameters/CampaignId'
-    get:
-      operationId: getCampaignLinksReport
-      tags:
-      - Campaign
-      summary: Campaign links report
-      parameters:
-      - $ref: '#/components/parameters/Limit'
-      - $ref: '#/components/parameters/StartingAfter'
-      responses:
-        '200':
-          description: A report of click activity per link in the campaign.
+        '400':
+          description: Bad request.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  data:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
                     type: array
                     items:
                       type: object
+                      required:
+                      - detail
                       properties:
-                        url:
+                        pointer:
                           type: string
-                          example: https://emailoctopus.com
-                        clicked:
-                          type: object
-                          properties:
-                            total:
-                              type: integer
-                              example: 110
-                            unique:
-                              type: integer
-                              example: 85
-  /campaigns/{campaign_id}/reports:
-    parameters:
-    - $ref: '#/components/parameters/CampaignId'
-    get:
-      operationId: getCampaignContactReports
-      tags:
-      - Campaign
-      summary: Campaign contact reports
-      description: Per-contact activity for a campaign. The report type (sent, opened, clicked, bounced, complained, unsubscribed, etc.) is selected via the type query parameter.
-      parameters:
-      - name: type
-        in: query
-        required: true
-        description: The type of contact report to return.
-        schema:
-          type: string
-          enum:
-          - sent
-          - opened
-          - clicked
-          - bounced
-          - complained
-          - unsubscribed
-      - $ref: '#/components/parameters/Limit'
-      - $ref: '#/components/parameters/StartingAfter'
-      responses:
-        '200':
-          description: A paged collection of contacts for the requested report type.
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Contact'
-                  paging:
-                    $ref: '#/components/schemas/Paging'
-components:
-  parameters:
-    StartingAfter:
-      name: starting_after
-      in: query
-      required: false
-      description: A cursor for pagination; the ID of the last record on the previous page.
-      schema:
-        type: string
-    Limit:
-      name: limit
-      in: query
-      required: false
-      description: The maximum number of records to return per page.
-      schema:
-        type: integer
-        default: 100
-        maximum: 1000
-    CampaignId:
-      name: campaign_id
-      in: path
-      required: true
-      description: The ID of the campaign.
-      schema:
-        type: string
-        example: 00000000-0000-0000-0000-000000000000
-  schemas:
-    CampaignSummaryReport:
-      type: object
-      description: A summary of a campaign's performance.
-      properties:
-        id:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+      summary: Campaign summary report
+      description: ''
+      parameters:
+      - name: campaign_id
+        in: path
+        description: The ID of the campaign.
+        required: true
+        deprecated: false
+        schema:
           type: string
-          example: 00000000-0000-0000-0000-000000000000
-        sent:
-          type: integer
-          description: The number of contacts that were sent to.
-          example: 200
-        bounced:
-          type: object
-          properties:
-            hard:
-              type: integer
-              example: 10
-            soft:
-              type: integer
-              example: 5
-        opened:
-          type: object
-          properties:
-            total:
-              type: integer
-              example: 110
-            unique:
-              type: integer
-              example: 85
-        clicked:
-          type: object
-          properties:
-            total:
-              type: integer
-              example: 110
-            unique:
-              type: integer
-              example: 85
-        complained:
-          type: integer
-          example: 50
-        unsubscribed:
-          type: integer
-          example: 20
-    Campaign:
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+components:
+  schemas:
+    Campaign-get:
       type: object
-      description: Details of a campaign.
+      description: Get details of a campaign.
       properties:
         id:
           type: string
@@ -225,30 +822,32 @@ components:
           - error
         name:
           type: string
-          maxLength: 255
           description: The name of the campaign.
           example: New clients campaign
+          maxLength: 255
         subject:
           type: string
-          maxLength: 255
           description: The subject of the campaign.
           example: Hello
+          maxLength: 255
         to:
           type: array
-          description: The IDs of the lists the campaign was sent to.
+          description: The ids of the lists the campaign was sent to.
           items:
             type: string
-          example:
-          - 00000000-0000-0000-0000-000000000000
+            example:
+            - 00000000-0000-0000-0000-000000000000
         from:
           type: object
           description: The sender of the campaign.
           properties:
             name:
               type: string
+              description: The name the campaign was sent from.
               example: Otto Octopus
             email_address:
               type: string
+              description: The email address the campaign was sent from.
               example: otto@example.com
         content:
           type: object
@@ -256,86 +855,165 @@ components:
           properties:
             html:
               type: string
-              example: <p>Hello</p>
-            plain_text:
-              type: string
-              example: Hello
+              description: The campaign's HTML content.
+              example: <html>Foo Bar</html>
         created_at:
           type: string
-          format: date-time
-          example: '2024-10-07T12:00:00+00:00'
+          description: When the campaign was created, in ISO 8601 format.
+          example: '2015-12-01T12:59:37+00:00'
         sent_at:
           type: string
-          format: date-time
-          nullable: true
-          example: '2024-10-08T12:00:00+00:00'
-    CampaignCollection:
+          description: When the campaign was sent, in ISO 8601 format.
+          example: '2015-12-01T12:59:37+00:00'
+    Campaign.collection:
       type: object
+      description: Get a collection of Campaign items.
       properties:
         data:
           type: array
+          description: Collection of Campaign items.
           items:
-            $ref: '#/components/schemas/Campaign'
+            $ref: '#/components/schemas/Campaign-get'
         paging:
-          $ref: '#/components/schemas/Paging'
-    Contact:
+          $ref: '#/components/schemas/PagingResource'
+    CampaignReportContact.collection-get.report:
       type: object
-      description: Details of a contact of a list.
+      description: Get campaign contact reports.
+      properties:
+        status:
+          type: string
+          description: Event status.
+          example: opened
+        data:
+          type: array
+          description: Details.
+          items:
+            type: object
+            properties:
+              contact_id:
+                type: string
+                description: The ID of the contact.
+                example: 00000000-0000-0000-0000-000000000000
+              contact_email_address:
+                type: string
+                description: The email address of the contact.
+                example: otto@example.com
+              occurred_at:
+                type: string
+                description: When the click occurred, in ISO 8601 format.
+                example: '2015-12-01T12:59:37+00:00'
+        paging:
+          type: object
+          properties:
+            next:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: Next page url.
+                  example: https://api.emailoctopus.com/campaigns/00000000-0000-0000-0000-000000000000/reports?status=opened&limit=10&starting_after=WzE3MjI5OTU4MDQwMDAsIjhkMDkxYTVhLTVhZDYtMTFlZi1iNmU4LTA1NjU4NDdhN2NkYSJd
+                starting_after:
+                  type: string
+                  description: Cursor that points to the end of the page.
+                  example: WzE3MjI5OTU4MDQwMDAsIjhkMDkxYTVhLTVhZDYtMTFlZi1iNmU4LTA1NjU4NDdhN2NkYSJd
+    CampaignReportLink.collection-get:
+      type: object
+      description: Get information on the performance of links in the campaign.
+      properties:
+        data:
+          type: array
+          description: Collection of Campaign items.
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                description: Next page url.
+                example: https://example.com/promo-1
+              clicked_total:
+                type: int
+                description: The number of total clicks.
+                example: 10
+              clicked_unique:
+                type: int
+                description: The number of unique clicks.
+                example: 7
+    CampaignSummaryReport:
+      type: object
+      description: Get a summary of the campaign.
       properties:
         id:
           type: string
-          description: The ID of the contact.
+          description: The ID of the campaign.
           example: 00000000-0000-0000-0000-000000000000
-        email_address:
-          type: string
-          description: The email address of the contact.
-          example: otto@example.com
-        fields:
+        sent:
+          type: int
+          description: The number of contacts that were sent to.
+          example: 200
+        bounced:
           type: object
-          description: Key/value pairs of field values, keyed by field tag.
-          additionalProperties: true
-          example:
-            referral: Otto
-            birthday: '2015-12-01'
-        status:
-          type: string
-          description: The subscription status of the contact.
-          example: subscribed
-          enum:
-          - subscribed
-          - unsubscribed
-          - pending
-        tags:
-          type: array
-          description: Tags associated with the contact.
-          items:
-            type: string
-          example:
-          - vip
-        created_at:
-          type: string
-          format: date-time
-          example: '2024-10-07T12:00:00+00:00'
-        last_updated_at:
-          type: string
-          format: date-time
-          example: '2024-10-07T12:00:00+00:00'
-    Paging:
+          description: Statistics related to bounces.
+          properties:
+            hard:
+              type: int
+              description: The number of contacts who hard bounced.
+              example: 10
+            soft:
+              type: int
+              description: The number of contacts who soft bounced.
+              example: 5
+        opened:
+          type: object
+          description: Statistics related to opens.
+          properties:
+            total:
+              type: int
+              description: The number of all opens.
+              example: 110
+            unique:
+              type: int
+              description: The number of unique opens.
+              example: 85
+        clicked:
+          type: object
+          description: Statistics related to clicks.
+          properties:
+            total:
+              type: int
+              description: The number of all opens.
+              example: 110
+            unique:
+              type: int
+              description: The number of unique opens.
+              example: 85
+        complained:
+          type: int
+          description: The number of contacts who complained.
+          example: 50
+        unsubscribed:
+          type: int
+          description: The number of contacts who unsubscribed.
+          example: 25
+    PagingNextResource:
       type: object
-      description: Cursor pagination metadata.
+      properties:
+        url:
+          type: string
+          description: Next page url.
+          example: https://api.emailoctopus.com/lists?limit=10&starting_after=WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
+        starting_after:
+          type: string
+          description: Cursor that points to the end of the page.
+          example: WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
+    PagingResource:
+      type: object
       properties:
         next:
-          type: string
-          nullable: true
-          description: The path to the next page of results, or null if none.
-          example: /lists?limit=100&starting_after=00000000-0000-0000-0000-000000000000
-        previous:
-          type: string
-          nullable: true
-          description: The path to the previous page of results, or null if none.
-          example: null
+          $ref: '#/components/schemas/PagingNextResource'
   securitySchemes:
     api_key:
       type: http
+      description: You can obtain your API key at https://api.emailoctopus.com/developer/api-keys/create
+      name: Authorization
+      in: header
       scheme: bearer
-      description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create

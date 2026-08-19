@@ -1,0 +1,577 @@
+{
+  "item": [
+    {
+      "id": "d4b0522c-bb41-4788-b969-0929dd4d64c1",
+      "name": "Campaign",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "92d9f81f-a1d9-4cb4-99b6-0f2442313708",
+          "name": "Get all campaigns",
+          "request": {
+            "name": "Get all campaigns",
+            "description": {},
+            "url": {
+              "path": [
+                "campaigns"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "The maximum number of records to return per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "starting_after",
+                  "value": "<string>",
+                  "description": "A cursor for pagination; the ID of the last record on the previous page."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "213ebdc3-8b0b-4648-a3bb-94df1e4a612b",
+              "name": "A paged collection of campaigns.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "starting_after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"00000000-0000-0000-0000-000000000000\",\n      \"status\": \"draft\",\n      \"name\": \"New clients campaign\",\n      \"subject\": \"Hello\",\n      \"to\": [\n        \"00000000-0000-0000-0000-000000000000\"\n      ],\n      \"from\": {\n        \"name\": \"Otto Octopus\",\n        \"email_address\": \"otto@example.com\"\n      },\n      \"content\": {\n        \"html\": \"<p>Hello</p>\",\n        \"plain_text\": \"Hello\"\n      },\n      \"created_at\": \"2024-10-07T12:00:00+00:00\",\n      \"sent_at\": \"2024-10-08T12:00:00+00:00\"\n    },\n    {\n      \"id\": \"00000000-0000-0000-0000-000000000000\",\n      \"status\": \"draft\",\n      \"name\": \"New clients campaign\",\n      \"subject\": \"Hello\",\n      \"to\": [\n        \"00000000-0000-0000-0000-000000000000\"\n      ],\n      \"from\": {\n        \"name\": \"Otto Octopus\",\n        \"email_address\": \"otto@example.com\"\n      },\n      \"content\": {\n        \"html\": \"<p>Hello</p>\",\n        \"plain_text\": \"Hello\"\n      },\n      \"created_at\": \"2024-10-07T12:00:00+00:00\",\n      \"sent_at\": \"2024-10-08T12:00:00+00:00\"\n    }\n  ],\n  \"paging\": {\n    \"next\": \"/lists?limit=100&starting_after=00000000-0000-0000-0000-000000000000\",\n    \"previous\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f7149630-f10e-43fe-ab56-e3b804ddd706",
+          "name": "Get campaign",
+          "request": {
+            "name": "Get campaign",
+            "description": {},
+            "url": {
+              "path": [
+                "campaigns",
+                ":campaign_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "campaign_id",
+                  "description": "(Required) The ID of the campaign."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f841e73b-678d-4c7f-9460-db218ed5c3c0",
+              "name": "The requested campaign.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":campaign_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "campaign_id",
+                      "description": "(Required) The ID of the campaign."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"00000000-0000-0000-0000-000000000000\",\n  \"status\": \"draft\",\n  \"name\": \"New clients campaign\",\n  \"subject\": \"Hello\",\n  \"to\": [\n    \"00000000-0000-0000-0000-000000000000\"\n  ],\n  \"from\": {\n    \"name\": \"Otto Octopus\",\n    \"email_address\": \"otto@example.com\"\n  },\n  \"content\": {\n    \"html\": \"<p>Hello</p>\",\n    \"plain_text\": \"Hello\"\n  },\n  \"created_at\": \"2024-10-07T12:00:00+00:00\",\n  \"sent_at\": \"2024-10-08T12:00:00+00:00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b19a0fb2-a4e8-4e68-abaf-e3ffc287e842",
+          "name": "Campaign summary report",
+          "request": {
+            "name": "Campaign summary report",
+            "description": {},
+            "url": {
+              "path": [
+                "campaigns",
+                ":campaign_id",
+                "reports",
+                "summary"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "campaign_id",
+                  "description": "(Required) The ID of the campaign."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e5db4e56-df81-4d59-8a68-99f1e2a5dd77",
+              "name": "A summary report of the campaign's performance.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":campaign_id",
+                    "reports",
+                    "summary"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "campaign_id",
+                      "description": "(Required) The ID of the campaign."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"00000000-0000-0000-0000-000000000000\",\n  \"sent\": 200,\n  \"bounced\": {\n    \"hard\": 10,\n    \"soft\": 5\n  },\n  \"opened\": {\n    \"total\": 110,\n    \"unique\": 85\n  },\n  \"clicked\": {\n    \"total\": 110,\n    \"unique\": 85\n  },\n  \"complained\": 50,\n  \"unsubscribed\": 20\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "00887411-9952-4c7e-a233-194c4ec7a0ed",
+          "name": "Campaign links report",
+          "request": {
+            "name": "Campaign links report",
+            "description": {},
+            "url": {
+              "path": [
+                "campaigns",
+                ":campaign_id",
+                "reports",
+                "links"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "The maximum number of records to return per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "starting_after",
+                  "value": "<string>",
+                  "description": "A cursor for pagination; the ID of the last record on the previous page."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "campaign_id",
+                  "description": "(Required) The ID of the campaign."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ba17adce-6435-41a3-aab6-a3470212999d",
+              "name": "A report of click activity per link in the campaign.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":campaign_id",
+                    "reports",
+                    "links"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "starting_after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "campaign_id",
+                      "description": "(Required) The ID of the campaign."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"url\": \"https://emailoctopus.com\",\n      \"clicked\": {\n        \"total\": 110,\n        \"unique\": 85\n      }\n    },\n    {\n      \"url\": \"https://emailoctopus.com\",\n      \"clicked\": {\n        \"total\": 110,\n        \"unique\": 85\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1eb0a093-c098-4a2e-b1a3-65614fe3d067",
+          "name": "Campaign contact reports",
+          "request": {
+            "name": "Campaign contact reports",
+            "description": {
+              "content": "Per-contact activity for a campaign. The report type (sent, opened, clicked, bounced, complained, unsubscribed, etc.) is selected via the type query parameter.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "campaigns",
+                ":campaign_id",
+                "reports"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "(Required) The type of contact report to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "The maximum number of records to return per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "starting_after",
+                  "value": "<string>",
+                  "description": "A cursor for pagination; the ID of the last record on the previous page."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "campaign_id",
+                  "description": "(Required) The ID of the campaign."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6580fa15-67b3-40de-acde-1e99c688c0e0",
+              "name": "A paged collection of contacts for the requested report type.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "campaigns",
+                    ":campaign_id",
+                    "reports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "starting_after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "campaign_id",
+                      "description": "(Required) The ID of the campaign."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"00000000-0000-0000-0000-000000000000\",\n      \"email_address\": \"otto@example.com\",\n      \"fields\": {\n        \"referral\": \"Otto\",\n        \"birthday\": \"2015-12-01\"\n      },\n      \"status\": \"subscribed\",\n      \"tags\": [\n        \"vip\"\n      ],\n      \"created_at\": \"2024-10-07T12:00:00+00:00\",\n      \"last_updated_at\": \"2024-10-07T12:00:00+00:00\"\n    },\n    {\n      \"id\": \"00000000-0000-0000-0000-000000000000\",\n      \"email_address\": \"otto@example.com\",\n      \"fields\": {\n        \"referral\": \"Otto\",\n        \"birthday\": \"2015-12-01\"\n      },\n      \"status\": \"subscribed\",\n      \"tags\": [\n        \"vip\"\n      ],\n      \"created_at\": \"2024-10-07T12:00:00+00:00\",\n      \"last_updated_at\": \"2024-10-07T12:00:00+00:00\"\n    }\n  ],\n  \"paging\": {\n    \"next\": \"/lists?limit=100&starting_after=00000000-0000-0000-0000-000000000000\",\n    \"previous\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.emailoctopus.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "215dab81-88ad-4bf6-a6ac-3f9b4bcdc351",
+    "name": "EmailOctopus v2 Automation Campaign API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.\n\nContact Support:\n Name: EmailOctopus Support",
+      "type": "text/plain"
+    }
+  }
+}

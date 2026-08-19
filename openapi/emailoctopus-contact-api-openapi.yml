@@ -1,235 +1,1686 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
-  title: EmailOctopus v2 Automation Contact API
-  description: The EmailOctopus v2 REST API lets developers manage subscriber lists, contacts, custom fields, tags, campaigns, automations, and campaign reports. All requests are made over HTTPS to https://api.emailoctopus.com and authenticated with a Bearer API key in the Authorization header.
-  termsOfService: https://emailoctopus.com/terms
-  contact:
-    name: EmailOctopus Support
-    url: https://help.emailoctopus.com
-  version: '2.0'
+  title: EmailOctopus v2 Contact API
+  description: "# Introduction\n\nThe EmailOctopus API allows you to manage resources and perform actions within the platform\
+    \ programmatically. You'll need to <a href=\"https://emailoctopus.com/account/sign-up\" target=\"_blank\">create an account</a>\
+    \ before using the API, if you don't already have one.\n\nThe API is designed around <a href=\"https://en.wikipedia.org/wiki/REST\"\
+    \ target=\"_blank\">REST</a> principles. It has a predictable URL structure based on resources, accepts <a href=\"https://www.json.org/json-en.html\"\
+    \ target=\"_blank\">JSON-encoded</a> request bodies, returns JSON-encoded responses and uses standard HTTP response codes,\
+    \ authentication and verbs.\n\nThe base URL for the API is https://api.emailoctopus.com.\n\n# Authentication\nTo use the\
+    \ API, you'll need to generate an API key. You can do this in your <a href=\"https://emailoctopus.com/developer/api-keys\"\
+    \ target=\"_blank\">account settings</a>. If you have an API key created prior to the release of API v2 (labelled 'legacy')\
+    \ you'll need to generate a new API key. New API keys are compatible with all versions of the API.\n\nThe API uses bearer\
+    \ authentication to authenticate requests. Authenticate your request by including the following header:\n```\nAuthorization:\
+    \ Bearer {token}\n```\n\nFor example, using curl:\n```\ncurl https://api.emailoctopus.com/lists/ -H \"Authorization: Bearer\
+    \ {token}\"\n```\n\nIf you see a JSON-formatted response with your list details, that's great! That means you can connect\
+    \ to the API, and your authentication token works.\n\nIf you encounter a JSON error response, refer to the `type` field\
+    \ for a link to detailed documentation. For non-JSON errors, the request likely didn't reach the server. In that case,\
+    \ double-check the URL and verify that your request is correctly formatted.\n\n# Rate limiting\nRequests to the API are\
+    \ subject to a rate limit, which is implemented using the <a href=\"https://en.wikipedia.org/wiki/Token_bucket\" target=\"\
+    _blank\">token bucket algorithm</a>. Each request consumes one token and your bucket holds up to 100 tokens. Tokens are\
+    \ replenished at a rate of 10 per second. To check your remaining tokens, refer to the `X-RateLimiting-Remaining` header\
+    \ in the response.\n\nThis system enables a steady request rate of up to 10 per second or a burst of up to 100 requests\
+    \ in a single instance if needed.\n\nIf your account exceeds the rate limit, the request will return a [429 HTTP status\
+    \ code](https://emailoctopus.com/api-documentation/v2#too-many-requests).\n\n# Pagination\nWhen you request a collection\
+    \ of entities, such as contacts belonging to a list, the data will be paginated rather than returned all at once. Each\
+    \ response will contain a maximum of 100 results in the `data` attribute.\n\nPagination information is included in the\
+    \ response `paging` attribute. This data will contain `next` attributes, with a URL and a `starting_after` cursor. The\
+    \ cursor serves as a link to the next page. You can use the cursor as a `starting_after` query string parameter to navigate\
+    \ to the next page or follow the provided URL in the JSON structure.\n\nHere's an example of what the `paging` attribute\
+    \ looks like:\n```\n\"paging\": {\n    \"next\": {\n        \"url\": \"https://api.emailoctopus.com/lists/{list_id}/contacts?starting_after=WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0&limit=100\"\
+    ,\n        \"starting_after\": \"WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0\"\
+    \n    }\n }\n```\nYou can add the cursor to your request URL by including the `starting_after` query string parameter,\
+    \ like this:\n```\nhttps://api.emailoctopus.com/lists/{list_id}/contacts?starting_after=WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0\n\
+    ```\n\nThe cursor should always be provided exactly as it was returned in a previous request. Avoid deconstructing the\
+    \ cursor and relying on any data inside it, as the implementation of the cursor is subject to change.\n\n# Errors\nError\
+    \ are returned in a standardised format following <a href=\"https://datatracker.ietf.org/doc/html/rfc7807\" target=\"\
+    _blank\">RFC 7807</a>. For example:\n\n```\n{\n    \"title\": \"An error occurred.\",\n    \"detail\": \"Bad request.\"\
+    ,\n    \"status\": 400,\n    \"type\": \"https://emailoctopus.com/api-documentation/v2#bad-request\"\n}\n```\n\nYou can\
+    \ use the `type` value to navigate to the documentation for more details about the specific error.\n\nYou may also encounter\
+    \ validation errors, which will return a 422 HTTP status code and a payload formatted according to <a href=\"https://www.rfc-editor.org/rfc/rfc9457.html\"\
+    \ target=\"_blank\">RFC 9457</a>.\n```\n{\n    \"title\": \"An error occurred.\",\n    \"detail\": \"Unprocessable content.\"\
+    ,\n    \"status\": 422,\n    \"errors\": [\n         {\n            \"detail\": \"This value should not be blank.\",\n\
+    \            \"pointer\": \"/email_address\"\n         }\n    ],\n    \"type\": \"https://emailoctopus.com/api-documentation/v2#unprocessable-content\"\
+    \n}\n```\n\nIn the following sections, you can find more information about each type of error.\n\n## access-denied\nYou\
+    \ do not have permission to access the requested entity, such as trying to get the contacts in a list belonging to another\
+    \ account.\n\nCheck that the API key you're using belongs to the account you're trying to access data in. You can verify\
+    \ this by navigating to the account's <a href=\"https://emailoctopus.com/developer/api-keys\" target=\"_blank\">API keys</a>\
+    \ and checking there's a key ending in the same four characters.\n\n## already-exists\nYou are attempting to create an\
+    \ entity that already exists, such as creating a tag on a list that already contains that tag, or adding a contact to\
+    \ a list that already includes that contact.\n\nYou can fix this by checking if the entity already exists before you attempt\
+    \ to create it. Or you may wish to handle the error gracefully in your code and update the existing resource when a duplicate\
+    \ is spotted.\n\nSome endpoints, such as the [create or update contact](#tag/Contact/operation/api_lists_list_idcontacts_put)\
+    \ endpoint, support an *upsert* operation. An upsert allows you to either update the entity if it exists or create a new\
+    \ one if it doesn't. Consider using this feature where applicable.\n\n## bad-request\nThe request body is not in the format\
+    \ expected. Check that the request body is valid JSON.\n\n## conflict\nThis request conflicts with the system state. <a\
+    \ href=\"https://help.emailoctopus.com/category/20-getting-in-touch\" target=\"_blank\">Get in touch</a> if you require\
+    \ further assistance.\n\n## internal-error\nThis error is returned when the API encounters an unexpected condition or\
+    \ an internal issue on the server. If you receive this error, it is probably not an issue with your request.\n\nIn some\
+    \ cases, retrying the request after some time may resolve the issue. We'll always be notified of the error via our internal\
+    \ tracking tools, but if the problem persists, <a href=\"https://help.emailoctopus.com/category/20-getting-in-touch\"\
+    \ target=\"_blank\">get in touch</a> with details about the error and we'll investigate.\n\n## not-found\nThe resource\
+    \ you're trying to access or modify could not be found. This error is typically caused by using an invalid or incorrect\
+    \ identifier, such as a list ID or contact ID that doesn't exist in your account.\n\nDouble-check the resource identifiers\
+    \ you're using in your request, and ensure they match the actual resources in your EmailOctopus account.\n\n## out-of-limits\n\
+    Executing this operation would cause you to exceed your plan limits. See our <a href=\"https://emailoctopus.com/pricing#comparison\"\
+    \ target=\"_blank\">pricing comparison</a> for further details on these limits.\n\n## unauthorized\nThe API key provided\
+    \ in the request is either invalid or missing. Ensure that you're using the correct API key and that it is included in\
+    \ the request header as shown in the [authentication section](/api-documentation/v2#section/Authentication).\n\n## unprocessable-content\n\
+    The JSON payload in your request body doesn't meet the required criteria. Check the errors attribute for details on the\
+    \ specific issues. It will include a pointer to the problematic attribute and an error description.\n\n## unsupported-media-type\n\
+    When making requests that require a JSON payload in the body, you must specify a `Content-Type` of `application/json`.\n\
+    \n## too-many-requests\nYour account has exceeded the rate limit. You can use the `X-RateLimit-Retry-After` header to\
+    \ determine when to make another request. See the [rate limiting section](/api-documentation/v2#section/Rate-limiting)\
+    \ section for further details.\n\n## method-not-allowed\nThe HTTP method used in your request is not supported for the\
+    \ endpoint you are trying to access. For example, attempting to use a POST method on an endpoint that only supports GET.\n\
+    \nCheck the API documentation for the correct methods allowed for each endpoint. Ensure your request uses one of the supported\
+    \ methods (e.g., GET, POST, PUT, DELETE) for the specific operation you want to perform.\n"
+  version: 2.0.0
 servers:
 - url: https://api.emailoctopus.com
+  description: ''
 security:
 - api_key: []
 tags:
 - name: Contact
+  description: 'A contact represents an individual person within a list. For instance someone who has subscribed to your weekly
+    newsletter.
+
+    Contacts contain essential information such as their email address, name and any additional data you have collected.
+
+    Contacts can also have tags, participate in automations and receive campaigns.
+
+    '
 paths:
   /lists/{list_id}/contacts:
-    parameters:
-    - $ref: '#/components/parameters/ListId'
     get:
-      operationId: getContacts
+      operationId: api_lists_list_idcontacts_get
       tags:
       - Contact
-      summary: Get contacts
-      parameters:
-      - $ref: '#/components/parameters/Limit'
-      - $ref: '#/components/parameters/StartingAfter'
       responses:
         '200':
-          description: A paged collection of contacts.
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ContactCollection'
-    post:
-      operationId: createContact
-      tags:
-      - Contact
-      summary: Create contact
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ContactWrite'
-      responses:
-        '200':
-          description: The created contact.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contact'
-    put:
-      operationId: createOrUpdateContact
-      tags:
-      - Contact
-      summary: Create or update contact
-      description: Creates a contact, or updates it if a contact with the supplied email address already exists on the list.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ContactWrite'
-      responses:
-        '200':
-          description: The created or updated contact.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contact'
-  /lists/{list_id}/contacts/batch:
-    parameters:
-    - $ref: '#/components/parameters/ListId'
-    put:
-      operationId: updateMultipleContacts
-      tags:
-      - Contact
-      summary: Update multiple list contacts
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-              - contacts
-              properties:
-                contacts:
-                  type: array
-                  description: The contacts to create or update.
-                  items:
-                    $ref: '#/components/schemas/ContactWrite'
-      responses:
-        '200':
-          description: The result of each contact operation in the batch.
+                $ref: '#/components/schemas/List.contacts.collection-get'
+        '400':
+          description: Bad request.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  data:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
                     type: array
                     items:
                       type: object
+                      required:
+                      - detail
                       properties:
-                        email_address:
+                        pointer:
                           type: string
-                          example: otto@example.com
-                        status:
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
                           type: string
-                          example: success
-  /lists/{list_id}/contacts/{contact_id}:
-    parameters:
-    - $ref: '#/components/parameters/ListId'
-    - $ref: '#/components/parameters/ContactId'
-    get:
-      operationId: getContact
-      tags:
-      - Contact
-      summary: Get contact
-      responses:
-        '200':
-          description: The requested contact.
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Contact'
-    put:
-      operationId: updateContact
-      tags:
-      - Contact
-      summary: Update contact
-      requestBody:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+      summary: Get contacts
+      description: ''
+      parameters:
+      - name: list_id
+        in: path
+        description: The ID of the list.
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ContactWrite'
-      responses:
-        '200':
-          description: The updated contact.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contact'
-    delete:
-      operationId: deleteContact
-      tags:
-      - Contact
-      summary: Delete contact
-      responses:
-        '204':
-          description: The contact was deleted.
-components:
-  parameters:
-    ListId:
-      name: list_id
-      in: path
-      required: true
-      description: The ID of the list.
-      schema:
-        type: string
-        example: 00000000-0000-0000-0000-000000000000
-    StartingAfter:
-      name: starting_after
-      in: query
-      required: false
-      description: A cursor for pagination; the ID of the last record on the previous page.
-      schema:
-        type: string
-    Limit:
-      name: limit
-      in: query
-      required: false
-      description: The maximum number of records to return per page.
-      schema:
-        type: integer
-        default: 100
-        maximum: 1000
-    ContactId:
-      name: contact_id
-      in: path
-      required: true
-      description: The ID of the contact (a UUID or the MD5 hash of the lowercased email).
-      schema:
-        type: string
-        example: 00000000-0000-0000-0000-000000000000
-  schemas:
-    ContactWrite:
-      type: object
-      required:
-      - email_address
-      properties:
-        email_address:
+        deprecated: false
+        schema:
           type: string
-          description: The email address of the contact.
-          example: otto@example.com
-        fields:
-          type: object
-          description: Key/value pairs of field values, keyed by field tag. Pass null to remove a field from the contact.
-          additionalProperties: true
-          example:
-            referral: Otto
-            birthday: '2015-12-01'
-        tags:
-          type: object
-          description: Tags to add or remove, keyed by tag name with a boolean value (true to add, false to remove).
-          additionalProperties:
-            type: boolean
-          example:
-            vip: true
-        status:
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+      - name: limit
+        in: query
+        description: Max number of results per page.
+        required: false
+        deprecated: false
+        schema:
+          type: integer
+          default: '100'
+        style: form
+        explode: true
+        example: '100'
+      - name: starting_after
+        in: query
+        description: Cursor that points to the end of the page.
+        required: false
+        deprecated: false
+        schema:
           type: string
-          description: The subscription status to set for the contact.
-          example: subscribed
+        style: form
+        explode: true
+        example: WyIyMDI0LTEyLTA3VDE1OjAzOjAxKzAwOjAwIiwiNDYzN2RmYTAtYjZmMC0xMWVmLWFjZDYtZjU5YjA4MDFlMjBkIl0
+      - name: tag
+        in: query
+        description: The tag associated with the contact.
+        required: false
+        deprecated: false
+        schema:
+          type: string
+        style: form
+        explode: true
+        example: vip
+      - name: status
+        in: query
+        description: The status of the contact.
+        required: false
+        deprecated: false
+        schema:
+          type: string
           enum:
           - subscribed
           - unsubscribed
           - pending
-    ContactCollection:
+          default: subscribed
+        style: form
+        explode: true
+        example: subscribed
+      - name: created_at.lte
+        in: query
+        description: Filter by creation date - less than or equal to. ISO 8601 date format.
+        required: false
+        deprecated: false
+        schema:
+          type: string
+        style: form
+        explode: true
+        example: '2024-01-19T12:14:28Z'
+      - name: created_at.gte
+        in: query
+        description: Filter by creation date - greater than or equal to. ISO 8601 date format.
+        required: false
+        deprecated: false
+        schema:
+          type: string
+        style: form
+        explode: true
+        example: '2024-01-19T12:14:28Z'
+      - name: last_updated_at.lte
+        in: query
+        description: Filter by update date - less than or equal to. ISO 8601 date format.
+        required: false
+        deprecated: false
+        schema:
+          type: string
+        style: form
+        explode: true
+        example: '2024-01-19T12:14:28Z'
+      - name: last_updated_at.gte
+        in: query
+        description: Filter by update date - greater than or equal to. ISO 8601 date format.
+        required: false
+        deprecated: false
+        schema:
+          type: string
+        style: form
+        explode: true
+        example: '2024-01-19T12:14:28Z'
+    put:
+      operationId: api_lists_list_idcontacts_put
+      tags:
+      - Contact
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListContact-get'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#conflict
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource already exists.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 409
+        '422':
+          description: Unprocessable content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type
+                    example: https://emailoctopus.com/api-documentation/v2#unprocessable-content
+                  title:
+                    type: string
+                    description: 'General error title: `An error occurred.`'
+                    example: An error occurred.
+                  detail:
+                    type: string
+                    description: 'Error description: `Unprocessable content.`'
+                    example: Unprocessable content.
+                  status:
+                    type: string
+                    description: 'Response status: `422`'
+                    example: 422
+                  errors:
+                    type: array
+                    description: Validation errors
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Error description.
+                        pointer:
+                          type: string
+                          description: A JSON Pointer <a href="https://datatracker.ietf.org/doc/html/rfc7807" target="_blank">[RFC
+                            7807]</a> to the value in the request document that caused the error.
+                      example:
+                        detail: This value is not a valid email address.
+                        pointer: /email_address
+      summary: Create or update contact
+      description: This is an *upsert* endpoint. If the contact does not exist, it will be created. If the contact already
+        exists, it will be updated.
+      parameters:
+      - name: list_id
+        in: path
+        description: The ID of the list.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              description: ''
+              deprecated: false
+              required:
+              - email_address
+              properties:
+                email_address:
+                  type: string
+                  description: The email address of the contact.
+                  example: otto@example.com
+                fields:
+                  type: object
+                  description: An object containing key/value pairs of field values, using the field's tag as the key.
+                  additionalProperties:
+                    description: The value of the field.
+                    x-additionalPropertiesName: field tag
+                    anyOf:
+                    - type: string
+                      title: Text
+                      description: The value for a "text" field.
+                    - type: integer
+                      title: Number
+                      description: The value for a "number" field.
+                    - type: string
+                      title: Date
+                      description: The value for a "date" field.
+                    - type: string
+                      title: Single Choice
+                      description: The value for a "choice_single" field.
+                    - type: Array of strings
+                      title: Multiple Choice
+                      description: The value for a "choice_multiple" field.
+                    - type: 'null'
+                      title: Unset
+                      description: Remove the field from the contact.
+                  example:
+                    referral: Otto
+                    birthday: '2015-12-01'
+                    how_many_pets: 2
+                    fieldToRemove: null
+                tags:
+                  type: object
+                  description: An object containing key/value pairs, where the key is the tag name and the value is true to
+                    add the tag or false to remove it. Tags that are not referenced in the object will not be updated.
+                  additionalProperties:
+                    type: boolean
+                  example:
+                    vip: true
+                    tagToRemove: false
+                status:
+                  type: string
+                  description: The status of the contact.
+                  example: subscribed
+                  enum:
+                  - pending
+                  - subscribed
+                  - unsubscribed
+        required: false
+    post:
+      operationId: api_lists_list_idcontacts_post
+      tags:
+      - Contact
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListContact-get'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#conflict
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource already exists.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 409
+        '422':
+          description: Unprocessable content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type
+                    example: https://emailoctopus.com/api-documentation/v2#unprocessable-content
+                  title:
+                    type: string
+                    description: 'General error title: `An error occurred.`'
+                    example: An error occurred.
+                  detail:
+                    type: string
+                    description: 'Error description: `Unprocessable content.`'
+                    example: Unprocessable content.
+                  status:
+                    type: string
+                    description: 'Response status: `422`'
+                    example: 422
+                  errors:
+                    type: array
+                    description: Validation errors
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Error description.
+                        pointer:
+                          type: string
+                          description: A JSON Pointer <a href="https://datatracker.ietf.org/doc/html/rfc7807" target="_blank">[RFC
+                            7807]</a> to the value in the request document that caused the error.
+                      example:
+                        detail: This value is not a valid email address.
+                        pointer: /email_address
+      summary: Create contact
+      description: ''
+      parameters:
+      - name: list_id
+        in: path
+        description: The ID of the list.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              description: ''
+              deprecated: false
+              required:
+              - email_address
+              properties:
+                email_address:
+                  type: string
+                  description: The email address of the contact.
+                  example: otto@example.com
+                fields:
+                  type: object
+                  description: An object containing key/value pairs of field values, using the field's tag as the key.
+                  additionalProperties:
+                    description: The value of the field.
+                    x-additionalPropertiesName: field tag
+                    anyOf:
+                    - type: string
+                      title: Text
+                      description: The value for a "text" field.
+                    - type: integer
+                      title: Number
+                      description: The value for a "number" field.
+                    - type: string
+                      title: Date
+                      description: The value for a "date" field.
+                    - type: string
+                      title: Single Choice
+                      description: The value for a "choice_single" field.
+                    - type: Array of strings
+                      title: Multiple Choice
+                      description: The value for a "choice_multiple" field.
+                    - type: 'null'
+                      title: Unset
+                      description: Remove the field from the contact.
+                  example:
+                    referral: Otto
+                    birthday: '2015-12-01'
+                    how_many_pets: 2
+                    fieldToRemove: null
+                tags:
+                  type: array
+                  description: An array of tags associated with the contact.
+                  items:
+                    type: string
+                    example: vip
+                status:
+                  type: string
+                  description: The status of the contact.
+                  example: subscribed
+                  enum:
+                  - pending
+                  - subscribed
+                  - unsubscribed
+        required: false
+  /lists/{list_id}/contacts/batch:
+    put:
+      operationId: api_lists_list_idcontactsbatch_put
+      tags:
+      - Contact
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        success:
+                          type: boolean
+                          description: Whether the contact was successfully updated.
+                          example: true
+                        data:
+                          $ref: '#/components/schemas/ListContact-get'
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        success:
+                          type: boolean
+                          description: Whether the contact was successfully updated.
+                          example: false
+                        id:
+                          type: string
+                          description: The ID of the contact.
+                          example: 00000000-0000-0000-0000-000000000000
+                        type:
+                          type: string
+                          description: The type of error.
+                          example: invalid_field
+                        title:
+                          type: string
+                          description: The title of the error.
+                          example: Invalid field
+                        detail:
+                          type: string
+                          description: The detail of the error.
+                          example: The field "email_address" is invalid
+                        status:
+                          type: integer
+                          description: The HTTP status code of the error.
+                          example: 400
+                        data:
+                          type: 'null'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+        '422':
+          description: Unprocessable content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unprocessable-content
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Unprocessable content.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 422
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+      summary: Update multiple list contacts
+      description: ''
+      parameters:
+      - name: list_id
+        in: path
+        description: The ID of the list.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListContactBatch-put'
+        required: false
+  /lists/{list_id}/contacts/{contact_id}:
+    get:
+      operationId: api_lists_list_idcontacts_contact_id_get
+      tags:
+      - Contact
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListContact-get'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: 'General error title: `An error occurred.`'
+                    example: An error occurred.
+                  detail:
+                    type: string
+                    description: 'Error description: `Bad request.`'
+                    example: Bad request.
+                  status:
+                    type: string
+                    description: 'Response status: `400`'
+                    example: 400
+                  errors:
+                    type: array
+                    description: Validation errors
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Error description.
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                      example:
+                        detail: This value is not a valid UUID.
+                        parameter: list_id
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+      summary: Get contact
+      description: ''
+      parameters:
+      - name: list_id
+        in: path
+        description: The ID of the list.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+      - name: contact_id
+        in: path
+        description: The ID of the contact, or an MD5 hash of the lowercase version of the contact's email address.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 631251b876fece73bc9dd647fe596d5f
+    put:
+      operationId: api_lists_list_idcontacts_contact_id_put
+      tags:
+      - Contact
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListContact-get'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+        '409':
+          description: Conflict.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#conflict
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource already exists.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 409
+        '422':
+          description: Unprocessable content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type
+                    example: https://emailoctopus.com/api-documentation/v2#unprocessable-content
+                  title:
+                    type: string
+                    description: 'General error title: `An error occurred.`'
+                    example: An error occurred.
+                  detail:
+                    type: string
+                    description: 'Error description: `Unprocessable content.`'
+                    example: Unprocessable content.
+                  status:
+                    type: string
+                    description: 'Response status: `422`'
+                    example: 422
+                  errors:
+                    type: array
+                    description: Validation errors
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          description: Error description.
+                        pointer:
+                          type: string
+                          description: A JSON Pointer <a href="https://datatracker.ietf.org/doc/html/rfc7807" target="_blank">[RFC
+                            7807]</a> to the value in the request document that caused the error.
+                      example:
+                        detail: This value is not a valid email address.
+                        pointer: /email_address
+      summary: Update contact
+      description: ''
+      parameters:
+      - name: list_id
+        in: path
+        description: The ID of the list.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+      - name: contact_id
+        in: path
+        description: The ID of the contact, or an MD5 hash of the lowercase version of the contact's email address.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 631251b876fece73bc9dd647fe596d5f
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              description: ''
+              deprecated: false
+              properties:
+                email_address:
+                  type: string
+                  description: The email address of the contact.
+                  example: otto@example.com
+                fields:
+                  type: object
+                  description: An object containing key/value pairs of field values, using the field's tag as the key.
+                  additionalProperties:
+                    description: The value of the field.
+                    x-additionalPropertiesName: field tag
+                    anyOf:
+                    - type: string
+                      title: Text
+                      description: The value for a "text" field.
+                    - type: integer
+                      title: Number
+                      description: The value for a "number" field.
+                    - type: string
+                      title: Date
+                      description: The value for a "date" field.
+                    - type: string
+                      title: Single Choice
+                      description: The value for a "choice_single" field.
+                    - type: Array of strings
+                      title: Multiple Choice
+                      description: The value for a "choice_multiple" field.
+                    - type: 'null'
+                      title: Unset
+                      description: Remove the field from the contact.
+                  example:
+                    referral: Otto
+                    birthday: '2015-12-01'
+                    how_many_pets: 2
+                    fieldToRemove: null
+                tags:
+                  type: object
+                  description: An object containing key/value pairs, where the key is the tag name and the value is true to
+                    add the tag or false to remove it. Tags that are not referenced in the object will not be updated.
+                  additionalProperties:
+                    type: boolean
+                  example:
+                    vip: true
+                    tagToRemove: false
+                status:
+                  type: string
+                  description: The status of the contact.
+                  example: subscribed
+                  enum:
+                  - pending
+                  - subscribed
+                  - unsubscribed
+        required: false
+    delete:
+      operationId: api_lists_list_idcontacts_contact_id_delete
+      tags:
+      - Contact
+      responses:
+        '204':
+          description: No content.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#bad-request
+                    default: https://emailoctopus.com/api-documentation/v2#bad-request
+                    example: https://emailoctopus.com/api-documentation/v2#bad-request
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Bad request.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 400
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - detail
+                      properties:
+                        pointer:
+                          type: string
+                          description: A JSON Pointer [RFC6901] to the value in the request document that caused the error.
+                          default: name
+                        parameter:
+                          type: string
+                          description: Name of the url parameter containing the error.
+                          default: list_id
+                        detail:
+                          type: string
+                          description: Error description.
+                          default: This value should be between 1 and 100.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#unauthorized
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Invalid key.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 401
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#access-denied
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Access denied.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 403
+        '404':
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Error type.
+                    enum:
+                    - https://emailoctopus.com/api-documentation/v2#not-found
+                  title:
+                    type: string
+                    description: General error title.
+                    default: An error occurred.
+                  detail:
+                    type: string
+                    description: Error description.
+                    default: Resource not found.
+                  status:
+                    type: string
+                    description: Response status.
+                    default: 404
+      summary: Delete contact
+      description: ''
+      parameters:
+      - name: list_id
+        in: path
+        description: The ID of the list.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 00000000-0000-0000-0000-000000000000
+      - name: contact_id
+        in: path
+        description: The ID of the contact, or an MD5 hash of the lowercase version of the contact's email address.
+        required: true
+        deprecated: false
+        schema:
+          type: string
+        style: simple
+        explode: false
+        example: 631251b876fece73bc9dd647fe596d5f
+components:
+  schemas:
+    List.contacts.collection-get:
       type: object
       properties:
         data:
           type: array
+          description: Collection of contacts.
           items:
-            $ref: '#/components/schemas/Contact'
+            $ref: '#/components/schemas/ListContact-get'
         paging:
-          $ref: '#/components/schemas/Paging'
-    Contact:
+          type: object
+          properties:
+            next:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: Next page url.
+                  example: https://api.emailoctopus.com/lists/00000000-0000-0000-0000-000000000000/contacts?limit=10&starting_after=WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
+                starting_after:
+                  type: string
+                  description: Cursor that points to the end of the page.
+                  example: WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
+    ListContact-get:
       type: object
-      description: Details of a contact of a list.
+      description: Get details of a contact of a list.
       properties:
         id:
           type: string
@@ -241,50 +1692,121 @@ components:
           example: otto@example.com
         fields:
           type: object
-          description: Key/value pairs of field values, keyed by field tag.
-          additionalProperties: true
+          description: An object containing key/value pairs of field values.
+          additionalProperties:
+            description: The value of the field.
+            x-additionalPropertiesName: field tag
+            anyOf:
+            - type: string
+              title: Text
+              description: The value for a "text" field.
+            - type: integer
+              title: Number
+              description: The value for the "number" field.
+            - type: string
+              title: Date
+              description: The value for a "date" field.
+            - type: string
+              title: Single Choice
+              description: The value for a "choice_single" field.
+            - type: Array of strings
+              title: Multiple Choice
+              description: The value for a "choice_multiple" field.
           example:
             referral: Otto
             birthday: '2015-12-01'
-        status:
-          type: string
-          description: The subscription status of the contact.
-          example: subscribed
-          enum:
-          - subscribed
-          - unsubscribed
-          - pending
+            how_many_pets: 2
         tags:
           type: array
-          description: Tags associated with the contact.
+          description: An array of tags associated with the contact.
           items:
             type: string
-          example:
-          - vip
+            example: vip
+        status:
+          type: string
+          description: The status of the contact.
+          example: subscribed
+          enum:
+          - pending
+          - subscribed
+          - unsubscribed
         created_at:
           type: string
-          format: date-time
-          example: '2024-10-07T12:00:00+00:00'
+          description: When the contact was created, in ISO 8601 format.
+          example: '2015-12-01T12:59:37+00:00'
         last_updated_at:
           type: string
-          format: date-time
-          example: '2024-10-07T12:00:00+00:00'
-    Paging:
+          description: When the contact was last updated, in ISO 8601 format.
+          example: '2015-12-01T12:59:37+00:00'
+      required:
+      - email_address
+    ListContactBatch-put:
       type: object
-      description: Cursor pagination metadata.
       properties:
-        next:
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListContactBatchItemResource-put'
+    ListContactBatchItemResource-put:
+      type: object
+      required:
+      - id
+      properties:
+        id:
           type: string
-          nullable: true
-          description: The path to the next page of results, or null if none.
-          example: /lists?limit=100&starting_after=00000000-0000-0000-0000-000000000000
-        previous:
+          description: The ID of the contact.
+          example: 00000000-0000-0000-0000-000000000000
+        email_address:
           type: string
-          nullable: true
-          description: The path to the previous page of results, or null if none.
-          example: null
+          description: The email address of the contact.
+          example: otto@example.com
+        fields:
+          type: object
+          description: An object containing key/value pairs of field values.
+          additionalProperties:
+            description: The value of the field.
+            x-additionalPropertiesName: field tag
+            anyOf:
+            - type: string
+              title: Text
+              description: The value for a "text" field.
+            - type: integer
+              title: Number
+              description: The value for the "number" field.
+            - type: string
+              title: Date
+              description: The value for a "date" field.
+            - type: string
+              title: Single Choice
+              description: The value for a "choice_single" field.
+            - type: Array of strings
+              title: Multiple Choice
+              description: The value for a "choice_multiple" field.
+          example:
+            referral: Otto
+            birthday: '2015-12-01'
+            how_many_pets: 2
+        tags:
+          type: object
+          description: An object containing key/value pairs, where the key is the tag name and the value is true to add the
+            tag or false to remove it. Tags that are not referenced in the object will not be updated.
+          additionalProperties:
+            type: boolean
+          example:
+            vip: true
+            tagToRemove: false
+        status:
+          type: string
+          description: The status of the contact.
+          example: subscribed
+          enum:
+          - pending
+          - subscribed
+          - unsubscribed
   securitySchemes:
     api_key:
       type: http
+      description: You can obtain your API key at https://api.emailoctopus.com/developer/api-keys/create
+      name: Authorization
+      in: header
       scheme: bearer
-      description: Bearer API key in the Authorization header. Create a key at https://api.emailoctopus.com/developer/api-keys/create

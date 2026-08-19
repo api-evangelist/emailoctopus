@@ -1,13 +1,7 @@
 {
   "provider": "emailoctopus",
-  "sources": [
-    "emailoctopus-automation-api-openapi.yml",
-    "emailoctopus-campaign-api-openapi.yml",
-    "emailoctopus-contact-api-openapi.yml",
-    "emailoctopus-field-api-openapi.yml",
-    "emailoctopus-list-api-openapi.yml",
-    "emailoctopus-tag-api-openapi.yml"
-  ],
+  "source": "openapi/_original/emailoctopus-v2-openapi.json",
+  "harvested_from": "https://emailoctopus.com/api-documentation/v2",
   "outputs": [
     "emailoctopus-automation-api-openapi.yml",
     "emailoctopus-campaign-api-openapi.yml",
@@ -16,9 +10,43 @@
     "emailoctopus-list-api-openapi.yml",
     "emailoctopus-tag-api-openapi.yml"
   ],
-  "archived": [],
-  "errors": [],
-  "warnings": [],
-  "notes": [],
-  "skipped": []
+  "operations": {
+    "Automation": [
+      "api_automations_automation_idqueue_post"
+    ],
+    "Campaign": [
+      "api_campaigns_get",
+      "api_campaigns_campaign_id_get",
+      "api_campaigns_campaign_idreports_get",
+      "api_campaigns_campaign_idreportslinks_get",
+      "api_campaigns_campaign_idreportssummary_get"
+    ],
+    "Contact": [
+      "api_lists_list_idcontacts_get",
+      "api_lists_list_idcontacts_put",
+      "api_lists_list_idcontacts_post",
+      "api_lists_list_idcontactsbatch_put",
+      "api_lists_list_idcontacts_contact_id_get",
+      "api_lists_list_idcontacts_contact_id_put",
+      "api_lists_list_idcontacts_contact_id_delete"
+    ],
+    "Field": [
+      "api_lists_list_idfields_post",
+      "api_lists_list_idfields_tag_put",
+      "api_lists_list_idfields_tag_delete"
+    ],
+    "List": [
+      "api_lists_get",
+      "api_lists_post",
+      "api_lists_list_id_get",
+      "api_lists_list_id_put",
+      "api_lists_list_id_delete"
+    ],
+    "Tag": [
+      "api_lists_list_idtags_get",
+      "api_lists_list_idtags_post",
+      "api_lists_list_idtags_tag_put",
+      "api_lists_list_idtags_tag_delete"
+    ]
+  }
 }

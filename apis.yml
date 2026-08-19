@@ -41,7 +41,7 @@ tags:
 - Reporting
 created: '2026-06-25'
 modified: '2026-08-13'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: emailoctopus:emailoctopus-automation-api
   name: EmailOctopus Automation API

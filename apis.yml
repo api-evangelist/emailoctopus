@@ -12,6 +12,18 @@ description: EmailOctopus is an affordable email-marketing platform for newslett
   cursor pagination, a token-bucket rate limit of 10 requests per second with a burst of 100, and an HMAC-SHA256-signed
   webhook surface carrying eight contact event types. It ships no official client SDK, no CLI and no MCP
   server.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: self-serve

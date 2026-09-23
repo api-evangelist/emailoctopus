@@ -1,7 +1,8 @@
 {
   "provider": "emailoctopus",
-  "source": "openapi/_original/emailoctopus-v2-openapi.json",
-  "harvested_from": "https://emailoctopus.com/api-documentation/v2",
+  "sources": [
+    "_original/emailoctopus-openapi.yml"
+  ],
   "outputs": [
     "emailoctopus-automation-api-openapi.yml",
     "emailoctopus-campaign-api-openapi.yml",
@@ -10,43 +11,22 @@
     "emailoctopus-list-api-openapi.yml",
     "emailoctopus-tag-api-openapi.yml"
   ],
-  "operations": {
-    "Automation": [
-      "api_automations_automation_idqueue_post"
-    ],
-    "Campaign": [
-      "api_campaigns_get",
-      "api_campaigns_campaign_id_get",
-      "api_campaigns_campaign_idreports_get",
-      "api_campaigns_campaign_idreportslinks_get",
-      "api_campaigns_campaign_idreportssummary_get"
-    ],
-    "Contact": [
-      "api_lists_list_idcontacts_get",
-      "api_lists_list_idcontacts_put",
-      "api_lists_list_idcontacts_post",
-      "api_lists_list_idcontactsbatch_put",
-      "api_lists_list_idcontacts_contact_id_get",
-      "api_lists_list_idcontacts_contact_id_put",
-      "api_lists_list_idcontacts_contact_id_delete"
-    ],
-    "Field": [
-      "api_lists_list_idfields_post",
-      "api_lists_list_idfields_tag_put",
-      "api_lists_list_idfields_tag_delete"
-    ],
-    "List": [
-      "api_lists_get",
-      "api_lists_post",
-      "api_lists_list_id_get",
-      "api_lists_list_id_put",
-      "api_lists_list_id_delete"
-    ],
-    "Tag": [
-      "api_lists_list_idtags_get",
-      "api_lists_list_idtags_post",
-      "api_lists_list_idtags_tag_put",
-      "api_lists_list_idtags_tag_delete"
-    ]
-  }
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "emailoctopus-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/emailoctopus-v2-openapi.json: archived document superseded by a larger archived document",
+    "emailoctopus-automation-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "emailoctopus-campaign-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "emailoctopus-contact-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "emailoctopus-field-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "emailoctopus-list-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "emailoctopus-tag-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

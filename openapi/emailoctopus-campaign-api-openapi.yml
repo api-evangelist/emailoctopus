@@ -790,17 +790,22 @@ components:
           type: int
           description: The number of contacts who unsubscribed.
           example: 25
-    Campaign.collection:
+    PagingNextResource:
       type: object
-      description: Get a collection of Campaign items.
       properties:
-        data:
-          type: array
-          description: Collection of Campaign items.
-          items:
-            $ref: '#/components/schemas/Campaign-get'
-        paging:
-          $ref: '#/components/schemas/PagingResource'
+        url:
+          type: string
+          description: Next page url.
+          example: https://api.emailoctopus.com/lists?limit=10&starting_after=WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
+        starting_after:
+          type: string
+          description: Cursor that points to the end of the page.
+          example: WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
+    PagingResource:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/PagingNextResource'
     Campaign-get:
       type: object
       description: Get details of a campaign.
@@ -885,22 +890,17 @@ components:
                 type: int
                 description: The number of unique clicks.
                 example: 7
-    PagingNextResource:
+    Campaign.collection:
       type: object
+      description: Get a collection of Campaign items.
       properties:
-        url:
-          type: string
-          description: Next page url.
-          example: https://api.emailoctopus.com/lists?limit=10&starting_after=WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
-        starting_after:
-          type: string
-          description: Cursor that points to the end of the page.
-          example: WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
-    PagingResource:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/PagingNextResource'
+        data:
+          type: array
+          description: Collection of Campaign items.
+          items:
+            $ref: '#/components/schemas/Campaign-get'
+        paging:
+          $ref: '#/components/schemas/PagingResource'
     CampaignReportContact.collection-get.report:
       type: object
       description: Get campaign contact reports.

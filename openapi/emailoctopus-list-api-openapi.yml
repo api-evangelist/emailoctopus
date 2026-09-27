@@ -863,6 +863,17 @@ components:
           example: '2015-12-01T12:59:37+00:00'
       required:
       - name
+    List.collection-get:
+      type: object
+      description: Get a collection of List items.
+      properties:
+        data:
+          type: array
+          items:
+            title: List
+            $ref: '#/components/schemas/List-get'
+        paging:
+          $ref: '#/components/schemas/PagingResource-get'
     PagingNextResource-get:
       type: object
       properties:
@@ -879,17 +890,6 @@ components:
       properties:
         next:
           $ref: '#/components/schemas/PagingNextResource-get'
-    List.collection-get:
-      type: object
-      description: Get a collection of List items.
-      properties:
-        data:
-          type: array
-          items:
-            title: List
-            $ref: '#/components/schemas/List-get'
-        paging:
-          $ref: '#/components/schemas/PagingResource-get'
   securitySchemes:
     api_key:
       type: http

@@ -734,6 +734,84 @@ paths:
         example: 00000000-0000-0000-0000-000000000000
 components:
   schemas:
+    CampaignReportLink.collection-get:
+      type: object
+      description: Get information on the performance of links in the campaign.
+      properties:
+        data:
+          type: array
+          description: Collection of Campaign items.
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                description: Next page url.
+                example: https://example.com/promo-1
+              clicked_total:
+                type: int
+                description: The number of total clicks.
+                example: 10
+              clicked_unique:
+                type: int
+                description: The number of unique clicks.
+                example: 7
+    CampaignReportContact.collection-get.report:
+      type: object
+      description: Get campaign contact reports.
+      properties:
+        status:
+          type: string
+          description: Event status.
+          example: opened
+        data:
+          type: array
+          description: Details.
+          items:
+            type: object
+            properties:
+              contact_id:
+                type: string
+                description: The ID of the contact.
+                example: 00000000-0000-0000-0000-000000000000
+              contact_email_address:
+                type: string
+                description: The email address of the contact.
+                example: otto@example.com
+              occurred_at:
+                type: string
+                description: When the click occurred, in ISO 8601 format.
+                example: '2015-12-01T12:59:37+00:00'
+        paging:
+          type: object
+          properties:
+            next:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: Next page url.
+                  example: https://api.emailoctopus.com/campaigns/00000000-0000-0000-0000-000000000000/reports?status=opened&limit=10&starting_after=WzE3MjI5OTU4MDQwMDAsIjhkMDkxYTVhLTVhZDYtMTFlZi1iNmU4LTA1NjU4NDdhN2NkYSJd
+                starting_after:
+                  type: string
+                  description: Cursor that points to the end of the page.
+                  example: WzE3MjI5OTU4MDQwMDAsIjhkMDkxYTVhLTVhZDYtMTFlZi1iNmU4LTA1NjU4NDdhN2NkYSJd
+    PagingResource:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/PagingNextResource'
+    Campaign.collection:
+      type: object
+      description: Get a collection of Campaign items.
+      properties:
+        data:
+          type: array
+          description: Collection of Campaign items.
+          items:
+            $ref: '#/components/schemas/Campaign-get'
+        paging:
+          $ref: '#/components/schemas/PagingResource'
     CampaignSummaryReport:
       type: object
       description: Get a summary of the campaign.
@@ -801,11 +879,6 @@ components:
           type: string
           description: Cursor that points to the end of the page.
           example: WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
-    PagingResource:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/PagingNextResource'
     Campaign-get:
       type: object
       description: Get details of a campaign.
@@ -868,79 +941,6 @@ components:
           type: string
           description: When the campaign was sent, in ISO 8601 format.
           example: '2015-12-01T12:59:37+00:00'
-    CampaignReportLink.collection-get:
-      type: object
-      description: Get information on the performance of links in the campaign.
-      properties:
-        data:
-          type: array
-          description: Collection of Campaign items.
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-                description: Next page url.
-                example: https://example.com/promo-1
-              clicked_total:
-                type: int
-                description: The number of total clicks.
-                example: 10
-              clicked_unique:
-                type: int
-                description: The number of unique clicks.
-                example: 7
-    Campaign.collection:
-      type: object
-      description: Get a collection of Campaign items.
-      properties:
-        data:
-          type: array
-          description: Collection of Campaign items.
-          items:
-            $ref: '#/components/schemas/Campaign-get'
-        paging:
-          $ref: '#/components/schemas/PagingResource'
-    CampaignReportContact.collection-get.report:
-      type: object
-      description: Get campaign contact reports.
-      properties:
-        status:
-          type: string
-          description: Event status.
-          example: opened
-        data:
-          type: array
-          description: Details.
-          items:
-            type: object
-            properties:
-              contact_id:
-                type: string
-                description: The ID of the contact.
-                example: 00000000-0000-0000-0000-000000000000
-              contact_email_address:
-                type: string
-                description: The email address of the contact.
-                example: otto@example.com
-              occurred_at:
-                type: string
-                description: When the click occurred, in ISO 8601 format.
-                example: '2015-12-01T12:59:37+00:00'
-        paging:
-          type: object
-          properties:
-            next:
-              type: object
-              properties:
-                url:
-                  type: string
-                  description: Next page url.
-                  example: https://api.emailoctopus.com/campaigns/00000000-0000-0000-0000-000000000000/reports?status=opened&limit=10&starting_after=WzE3MjI5OTU4MDQwMDAsIjhkMDkxYTVhLTVhZDYtMTFlZi1iNmU4LTA1NjU4NDdhN2NkYSJd
-                starting_after:
-                  type: string
-                  description: Cursor that points to the end of the page.
-                  example: WzE3MjI5OTU4MDQwMDAsIjhkMDkxYTVhLTVhZDYtMTFlZi1iNmU4LTA1NjU4NDdhN2NkYSJd
   securitySchemes:
     api_key:
       type: http

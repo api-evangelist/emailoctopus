@@ -740,6 +740,33 @@ paths:
         example: 00000000-0000-0000-0000-000000000000
 components:
   schemas:
+    List.collection-get:
+      type: object
+      description: Get a collection of List items.
+      properties:
+        data:
+          type: array
+          items:
+            title: List
+            $ref: '#/components/schemas/List-get'
+        paging:
+          $ref: '#/components/schemas/PagingResource-get'
+    PagingNextResource-get:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Next page url.
+          example: https://api.emailoctopus.com/lists?limit=10&starting_after=WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
+        starting_after:
+          type: string
+          description: Cursor that points to the end of the page.
+          example: WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
+    PagingResource-get:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/PagingNextResource-get'
     List-get:
       type: object
       properties:
@@ -863,33 +890,6 @@ components:
           example: '2015-12-01T12:59:37+00:00'
       required:
       - name
-    List.collection-get:
-      type: object
-      description: Get a collection of List items.
-      properties:
-        data:
-          type: array
-          items:
-            title: List
-            $ref: '#/components/schemas/List-get'
-        paging:
-          $ref: '#/components/schemas/PagingResource-get'
-    PagingNextResource-get:
-      type: object
-      properties:
-        url:
-          type: string
-          description: Next page url.
-          example: https://api.emailoctopus.com/lists?limit=10&starting_after=WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
-        starting_after:
-          type: string
-          description: Cursor that points to the end of the page.
-          example: WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
-    PagingResource-get:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/PagingNextResource-get'
   securitySchemes:
     api_key:
       type: http

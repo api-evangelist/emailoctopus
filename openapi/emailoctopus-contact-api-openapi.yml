@@ -1581,6 +1581,28 @@ paths:
         example: 631251b876fece73bc9dd647fe596d5f
 components:
   schemas:
+    List.contacts.collection-get:
+      type: object
+      properties:
+        data:
+          type: array
+          description: Collection of contacts.
+          items:
+            $ref: '#/components/schemas/ListContact-get'
+        paging:
+          type: object
+          properties:
+            next:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: Next page url.
+                  example: https://api.emailoctopus.com/lists/00000000-0000-0000-0000-000000000000/contacts?limit=10&starting_after=WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
+                starting_after:
+                  type: string
+                  description: Cursor that points to the end of the page.
+                  example: WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
     ListContact-get:
       type: object
       description: Get details of a contact of a list.
@@ -1705,28 +1727,6 @@ components:
           - pending
           - subscribed
           - unsubscribed
-    List.contacts.collection-get:
-      type: object
-      properties:
-        data:
-          type: array
-          description: Collection of contacts.
-          items:
-            $ref: '#/components/schemas/ListContact-get'
-        paging:
-          type: object
-          properties:
-            next:
-              type: object
-              properties:
-                url:
-                  type: string
-                  description: Next page url.
-                  example: https://api.emailoctopus.com/lists/00000000-0000-0000-0000-000000000000/contacts?limit=10&starting_after=WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
-                starting_after:
-                  type: string
-                  description: Cursor that points to the end of the page.
-                  example: WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
   securitySchemes:
     api_key:
       type: http

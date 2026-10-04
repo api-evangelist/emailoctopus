@@ -740,17 +740,11 @@ paths:
         example: 00000000-0000-0000-0000-000000000000
 components:
   schemas:
-    List.collection-get:
+    PagingResource-get:
       type: object
-      description: Get a collection of List items.
       properties:
-        data:
-          type: array
-          items:
-            title: List
-            $ref: '#/components/schemas/List-get'
-        paging:
-          $ref: '#/components/schemas/PagingResource-get'
+        next:
+          $ref: '#/components/schemas/PagingNextResource-get'
     PagingNextResource-get:
       type: object
       properties:
@@ -762,11 +756,17 @@ components:
           type: string
           description: Cursor that points to the end of the page.
           example: WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
-    PagingResource-get:
+    List.collection-get:
       type: object
+      description: Get a collection of List items.
       properties:
-        next:
-          $ref: '#/components/schemas/PagingNextResource-get'
+        data:
+          type: array
+          items:
+            title: List
+            $ref: '#/components/schemas/List-get'
+        paging:
+          $ref: '#/components/schemas/PagingResource-get'
     List-get:
       type: object
       properties:

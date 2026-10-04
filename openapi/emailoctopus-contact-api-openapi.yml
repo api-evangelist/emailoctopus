@@ -1581,28 +1581,61 @@ paths:
         example: 631251b876fece73bc9dd647fe596d5f
 components:
   schemas:
-    List.contacts.collection-get:
+    ListContactBatchItemResource-put:
       type: object
+      required:
+      - id
       properties:
-        data:
-          type: array
-          description: Collection of contacts.
-          items:
-            $ref: '#/components/schemas/ListContact-get'
-        paging:
+        id:
+          type: string
+          description: The ID of the contact.
+          example: 00000000-0000-0000-0000-000000000000
+        email_address:
+          type: string
+          description: The email address of the contact.
+          example: otto@example.com
+        fields:
           type: object
-          properties:
-            next:
-              type: object
-              properties:
-                url:
-                  type: string
-                  description: Next page url.
-                  example: https://api.emailoctopus.com/lists/00000000-0000-0000-0000-000000000000/contacts?limit=10&starting_after=WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
-                starting_after:
-                  type: string
-                  description: Cursor that points to the end of the page.
-                  example: WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
+          description: An object containing key/value pairs of field values.
+          additionalProperties:
+            description: The value of the field.
+            x-additionalPropertiesName: field tag
+            anyOf:
+            - type: string
+              title: Text
+              description: The value for a "text" field.
+            - type: integer
+              title: Number
+              description: The value for the "number" field.
+            - type: string
+              title: Date
+              description: The value for a "date" field.
+            - type: string
+              title: Single Choice
+              description: The value for a "choice_single" field.
+            - type: Array of strings
+              title: Multiple Choice
+              description: The value for a "choice_multiple" field.
+          example:
+            referral: Otto
+            birthday: '2015-12-01'
+            how_many_pets: 2
+        tags:
+          type: object
+          description: An object containing key/value pairs, where the key is the tag name and the value is true to add the tag or false to remove it. Tags that are not referenced in the object will not be updated.
+          additionalProperties:
+            type: boolean
+          example:
+            vip: true
+            tagToRemove: false
+        status:
+          type: string
+          description: The status of the contact.
+          example: subscribed
+          enum:
+          - pending
+          - subscribed
+          - unsubscribed
     ListContact-get:
       type: object
       description: Get details of a contact of a list.
@@ -1672,61 +1705,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ListContactBatchItemResource-put'
-    ListContactBatchItemResource-put:
+    List.contacts.collection-get:
       type: object
-      required:
-      - id
       properties:
-        id:
-          type: string
-          description: The ID of the contact.
-          example: 00000000-0000-0000-0000-000000000000
-        email_address:
-          type: string
-          description: The email address of the contact.
-          example: otto@example.com
-        fields:
+        data:
+          type: array
+          description: Collection of contacts.
+          items:
+            $ref: '#/components/schemas/ListContact-get'
+        paging:
           type: object
-          description: An object containing key/value pairs of field values.
-          additionalProperties:
-            description: The value of the field.
-            x-additionalPropertiesName: field tag
-            anyOf:
-            - type: string
-              title: Text
-              description: The value for a "text" field.
-            - type: integer
-              title: Number
-              description: The value for the "number" field.
-            - type: string
-              title: Date
-              description: The value for a "date" field.
-            - type: string
-              title: Single Choice
-              description: The value for a "choice_single" field.
-            - type: Array of strings
-              title: Multiple Choice
-              description: The value for a "choice_multiple" field.
-          example:
-            referral: Otto
-            birthday: '2015-12-01'
-            how_many_pets: 2
-        tags:
-          type: object
-          description: An object containing key/value pairs, where the key is the tag name and the value is true to add the tag or false to remove it. Tags that are not referenced in the object will not be updated.
-          additionalProperties:
-            type: boolean
-          example:
-            vip: true
-            tagToRemove: false
-        status:
-          type: string
-          description: The status of the contact.
-          example: subscribed
-          enum:
-          - pending
-          - subscribed
-          - unsubscribed
+          properties:
+            next:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: Next page url.
+                  example: https://api.emailoctopus.com/lists/00000000-0000-0000-0000-000000000000/contacts?limit=10&starting_after=WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
+                starting_after:
+                  type: string
+                  description: Cursor that points to the end of the page.
+                  example: WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
   securitySchemes:
     api_key:
       type: http

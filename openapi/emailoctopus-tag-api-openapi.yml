@@ -772,6 +772,13 @@ paths:
         example: Hometown
 components:
   schemas:
+    ListTag:
+      type: object
+      properties:
+        tag:
+          type: string
+          description: The name of the tag.
+          example: my tag
     List.tags.collection-get:
       type: object
       properties:
@@ -794,13 +801,6 @@ components:
                   type: string
                   description: Cursor that points to the end of the page.
                   example: WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
-    ListTag:
-      type: object
-      properties:
-        tag:
-          type: string
-          description: The name of the tag.
-          example: my tag
   securitySchemes:
     api_key:
       type: http

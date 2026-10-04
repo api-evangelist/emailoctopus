@@ -209,6 +209,9 @@ apis:
   - type: OpenCollection
     url: collections/emailoctopus-tag-api.opencollection.json
 common:
+- type: CapabilityMap
+  url: capabilities/emailoctopus-capability-edges.yml
+  name: EmailOctopus Business Capability Map
 - type: AgenticAccess
   url: agentic-access/emailoctopus-agentic-access.yml
 - type: DomainSecurity

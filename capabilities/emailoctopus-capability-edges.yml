@@ -1,0 +1,36 @@
+slug: emailoctopus
+provider: EmailOctopus
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Automation
+  spec_file: emailoctopus-automation-api-openapi.yml
+  capability_id: BC-400.60
+  capability_id_l1: BC-400
+  capability_name: Digital Marketing Management
+  confidence: 0.75
+  evidence: POST /automations/{automation_id}/queue  Start an automation for a contact
+  reason: EmailOctopus is an 'email-marketing platform for newsletters, campaigns, automations'; enqueuing
+    a contact into an automation is marketing automation / lifecycle email marketing. Ambiguity remains
+    between digital marketing automation and demand generation.
+- tag: Campaign
+  spec_file: emailoctopus-campaign-api-openapi.yml
+  capability_id: BC-400.60
+  capability_id_l1: BC-400
+  capability_name: Digital Marketing Management
+  confidence: 0.7
+  evidence: GET /campaigns  Get all campaigns; GET /campaigns/{campaign_id}/reports/summary  Campaign
+    summary report
+  reason: Email-marketing campaign retrieval plus open/click and summary reporting is execution and measurement
+    of digital (email) marketing campaigns. L2 chosen as Digital Marketing Management (email/marketing
+    automation); could arguably sit under Demand Generation, hence moderate confidence.

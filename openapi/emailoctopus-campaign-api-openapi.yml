@@ -734,6 +734,22 @@ paths:
         example: 00000000-0000-0000-0000-000000000000
 components:
   schemas:
+    PagingNextResource:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Next page url.
+          example: https://api.emailoctopus.com/lists?limit=10&starting_after=WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
+        starting_after:
+          type: string
+          description: Cursor that points to the end of the page.
+          example: WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
+    PagingResource:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/PagingNextResource'
     CampaignSummaryReport:
       type: object
       description: Get a summary of the campaign.
@@ -790,28 +806,6 @@ components:
           type: int
           description: The number of contacts who unsubscribed.
           example: 25
-    CampaignReportLink.collection-get:
-      type: object
-      description: Get information on the performance of links in the campaign.
-      properties:
-        data:
-          type: array
-          description: Collection of Campaign items.
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-                description: Next page url.
-                example: https://example.com/promo-1
-              clicked_total:
-                type: int
-                description: The number of total clicks.
-                example: 10
-              clicked_unique:
-                type: int
-                description: The number of unique clicks.
-                example: 7
     Campaign-get:
       type: object
       description: Get details of a campaign.
@@ -874,6 +868,28 @@ components:
           type: string
           description: When the campaign was sent, in ISO 8601 format.
           example: '2015-12-01T12:59:37+00:00'
+    CampaignReportLink.collection-get:
+      type: object
+      description: Get information on the performance of links in the campaign.
+      properties:
+        data:
+          type: array
+          description: Collection of Campaign items.
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                description: Next page url.
+                example: https://example.com/promo-1
+              clicked_total:
+                type: int
+                description: The number of total clicks.
+                example: 10
+              clicked_unique:
+                type: int
+                description: The number of unique clicks.
+                example: 7
     Campaign.collection:
       type: object
       description: Get a collection of Campaign items.
@@ -885,17 +901,6 @@ components:
             $ref: '#/components/schemas/Campaign-get'
         paging:
           $ref: '#/components/schemas/PagingResource'
-    PagingNextResource:
-      type: object
-      properties:
-        url:
-          type: string
-          description: Next page url.
-          example: https://api.emailoctopus.com/lists?limit=10&starting_after=WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
-        starting_after:
-          type: string
-          description: Cursor that points to the end of the page.
-          example: WyJiOWYyNjA5OC1kZjcxLTExZWUtOTQ4Zi00Yjc0NTg4MjVjYzAiXQ
     CampaignReportContact.collection-get.report:
       type: object
       description: Get campaign contact reports.
@@ -936,11 +941,6 @@ components:
                   type: string
                   description: Cursor that points to the end of the page.
                   example: WzE3MjI5OTU4MDQwMDAsIjhkMDkxYTVhLTVhZDYtMTFlZi1iNmU4LTA1NjU4NDdhN2NkYSJd
-    PagingResource:
-      type: object
-      properties:
-        next:
-          $ref: '#/components/schemas/PagingNextResource'
   securitySchemes:
     api_key:
       type: http

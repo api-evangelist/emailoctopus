@@ -1636,6 +1636,35 @@ components:
           - pending
           - subscribed
           - unsubscribed
+    ListContactBatch-put:
+      type: object
+      properties:
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListContactBatchItemResource-put'
+    List.contacts.collection-get:
+      type: object
+      properties:
+        data:
+          type: array
+          description: Collection of contacts.
+          items:
+            $ref: '#/components/schemas/ListContact-get'
+        paging:
+          type: object
+          properties:
+            next:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: Next page url.
+                  example: https://api.emailoctopus.com/lists/00000000-0000-0000-0000-000000000000/contacts?limit=10&starting_after=WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
+                starting_after:
+                  type: string
+                  description: Cursor that points to the end of the page.
+                  example: WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
     ListContact-get:
       type: object
       description: Get details of a contact of a list.
@@ -1698,35 +1727,6 @@ components:
           example: '2015-12-01T12:59:37+00:00'
       required:
       - email_address
-    ListContactBatch-put:
-      type: object
-      properties:
-        contacts:
-          type: array
-          items:
-            $ref: '#/components/schemas/ListContactBatchItemResource-put'
-    List.contacts.collection-get:
-      type: object
-      properties:
-        data:
-          type: array
-          description: Collection of contacts.
-          items:
-            $ref: '#/components/schemas/ListContact-get'
-        paging:
-          type: object
-          properties:
-            next:
-              type: object
-              properties:
-                url:
-                  type: string
-                  description: Next page url.
-                  example: https://api.emailoctopus.com/lists/00000000-0000-0000-0000-000000000000/contacts?limit=10&starting_after=WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
-                starting_after:
-                  type: string
-                  description: Cursor that points to the end of the page.
-                  example: WzIsIjIwMjQtMDMtMTRUMTA6MTU6MjcrMDA6MDAiXQ
   securitySchemes:
     api_key:
       type: http

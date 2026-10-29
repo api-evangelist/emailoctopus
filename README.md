@@ -1,4 +1,4 @@
-# EmailOctopus (emailoctopus)
+# EmailOctopus
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,161 +64,160 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-EmailOctopus is an affordable email-marketing platform for newsletters, campaigns, automations, and audience management. Its REST API (v2 at https://api.emailoctopus.com, Bearer authenticated) lets developers manage lists, contacts, custom fields, tags, campaigns, automations, and campaign reports programmatically.
+EmailOctopus is an affordable email-marketing platform for newsletters, campaigns, automations and audience management, built on a low-cost sending model that undercuts the incumbent ESPs. Its v2 REST API is served from a single host, https://api.emailoctopus.com, with no version segment in the path, and is authenticated with a Bearer API key. The API covers subscriber lists, contacts, per-list custom fields and tags, campaigns and three campaign report projections, plus an operation to enqueue a contact into an automation. EmailOctopus publishes a real OpenAPI 3.1.0 document (25 operations, 19 schemas) at its v2 reference URL, documents an RFC 7807 error envelope with dereferenceable type URIs, cursor pagination, a token-bucket rate limit of 10 requests per second with a burst of 100, and an HMAC-SHA256-signed webhook surface carrying eight contact event types. It ships no official client SDK, no CLI and no MCP server.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/emailoctopus/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/emailoctopus/refs/heads/main/apis.yml)
+**Areas:** Email · Email Marketing · Newsletters · Campaigns · Automation · Contacts · List · Marketing · Webhook · Transactional Email · Subscriber Management · Reporting
 
-## Tags
+## EmailOctopus on APIs.io
 
-- Email
-- Email Marketing
-- Newsletters
-- Campaigns
-- Automation
+Everything profiled for EmailOctopus is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/emailoctopus/](https://apis.io/providers/emailoctopus/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (6)
 
-- **Created:** 2026-06-25
-- **Modified:** 2026-06-25
+- [EmailOctopus Automation API](https://apis.io/apis/emailoctopus/emailoctopus-automation-api/) — Enqueue an existing contact into an EmailOctopus automation. Write-only — the v2 API exposes no operation to list or read automations, so the automation id…
+- [EmailOctopus Campaign API](https://apis.io/apis/emailoctopus/emailoctopus-campaign-api/) — Read campaigns and their three report projections — summary counters, per-link clicks, and per-contact engagement rows. Read-only: campaigns cannot be…
+- [EmailOctopus Contact API](https://apis.io/apis/emailoctopus/emailoctopus-contact-api/) — Manage subscribers on a list: create, read, update, delete, upsert by email address, and update many at once through the batch endpoint. The upsert (PUT…
+- [EmailOctopus Field API](https://apis.io/apis/emailoctopus/emailoctopus-field-api/) — Define the per-list custom fields contact records are written against. Fields are keyed by a stable tag slug and typed text, number or date, with optional…
+- [EmailOctopus List API](https://apis.io/apis/emailoctopus/emailoctopus-list-api/) — Create and manage subscriber lists, the aggregate root of the EmailOctopus data model. Fields, tags and contacts are all owned by a list and addressed…
+- [EmailOctopus Tag API](https://apis.io/apis/emailoctopus/emailoctopus-tag-api/) — Create, rename, delete and list the tags used to segment contacts on a list. Tags are keyed by slug rather than an id. 4 operation(s) in the EmailOctopus v2…
 
-## APIs
+### Published properties
 
-### EmailOctopus Lists API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-Create, read, update, and delete subscriber lists, plus manage the custom fields (text, number, date, choice) defined on each list.
+#### AsyncAPI (1)
 
-- **Human URL:** [https://emailoctopus.com/api-documentation/lists](https://emailoctopus.com/api-documentation/lists)
-- **Base URL:** `https://api.emailoctopus.com`
+Event-driven and webhook contracts.
 
-#### Tags
+- [Emailoctopus Webhooks](https://apis.io/asyncapis/emailoctopus/emailoctopus-webhooks/)
 
-- Lists
-- Audiences
-- Fields
+#### MCP servers (1)
 
-#### Properties
+Model Context Protocol servers that expose the API to agents.
 
-- [Documentation](https://emailoctopus.com/api-documentation/lists)
-- [API Reference](https://emailoctopus.com/api-documentation)
-- [OpenAPI](openapi/emailoctopus-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/emailoctopus.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/emailoctopus.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [emailoctopus](https://apis.io/servers/emailoctopus/emailoctopus/)
 
-### EmailOctopus Contacts API
+#### Agentic access (1)
 
-Create, create-or-update, get, update, delete, and batch-update contacts within a list, including their field values and tag assignments.
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- **Human URL:** [https://emailoctopus.com/api-documentation/lists](https://emailoctopus.com/api-documentation/lists)
-- **Base URL:** `https://api.emailoctopus.com`
+- [Emailoctopus Agentic Access](https://apis.io/agentic-access/emailoctopus/emailoctopus-agentic-access/)
 
-#### Tags
+#### Collections (7)
 
-- Contacts
-- Subscribers
-- CRUD
+Postman and Open Collection request collections.
 
-#### Properties
+- [EmailOctopus v2 API](https://apis.io/collections/emailoctopus/open-emailoctopus/)
+- [EmailOctopus v2 Automation API](https://apis.io/collections/emailoctopus/open-emailoctopus-automation-api/)
+- [EmailOctopus v2 Automation Campaign API](https://apis.io/collections/emailoctopus/open-emailoctopus-campaign-api/)
+- [EmailOctopus v2 Automation Contact API](https://apis.io/collections/emailoctopus/open-emailoctopus-contact-api/)
+- [EmailOctopus v2 Automation Field API](https://apis.io/collections/emailoctopus/open-emailoctopus-field-api/)
+- [EmailOctopus v2 Automation List API](https://apis.io/collections/emailoctopus/open-emailoctopus-list-api/)
+- [EmailOctopus v2 Automation Tag API](https://apis.io/collections/emailoctopus/open-emailoctopus-tag-api/)
 
-- [Documentation](https://emailoctopus.com/api-documentation/lists)
-- [API Reference](https://emailoctopus.com/api-documentation)
-- [OpenAPI](openapi/emailoctopus-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/emailoctopus.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/emailoctopus.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Overlays (6)
 
-### EmailOctopus Campaigns API
+OpenAPI overlays, including conversational phrasing for each operation.
 
-Retrieve a single campaign or list all campaigns with status, subject, sender, content, and timestamps.
+- [Emailoctopus Automation Overlay](https://apis.io/overlays/emailoctopus/emailoctopus-automation-overlay/)
+- [Emailoctopus Campaign Overlay](https://apis.io/overlays/emailoctopus/emailoctopus-campaign-overlay/)
+- [Emailoctopus Contact Overlay](https://apis.io/overlays/emailoctopus/emailoctopus-contact-overlay/)
+- [Emailoctopus Field Overlay](https://apis.io/overlays/emailoctopus/emailoctopus-field-overlay/)
+- [Emailoctopus List Overlay](https://apis.io/overlays/emailoctopus/emailoctopus-list-overlay/)
+- [Emailoctopus Tag Overlay](https://apis.io/overlays/emailoctopus/emailoctopus-tag-overlay/)
 
-- **Human URL:** [https://emailoctopus.com/api-documentation/campaigns](https://emailoctopus.com/api-documentation/campaigns)
-- **Base URL:** `https://api.emailoctopus.com`
+#### Security (2)
 
-#### Tags
+Authentication, trust centre, and vulnerability disclosure.
 
-- Campaigns
-- Email
-- Sending
+- [Emailoctopus Authentication](https://apis.io/security/emailoctopus/emailoctopus-authentication/)
+- [Emailoctopus Domain Security](https://apis.io/security/emailoctopus/emailoctopus-domain-security/)
 
-#### Properties
+#### Plans and pricing (1)
 
-- [Documentation](https://emailoctopus.com/api-documentation/campaigns)
-- [API Reference](https://emailoctopus.com/api-documentation)
-- [OpenAPI](openapi/emailoctopus-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/emailoctopus.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/emailoctopus.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Published plans, tiers and prices.
 
-### EmailOctopus Tags API
+- [Emailoctopus Plans Pricing](https://apis.io/plans/emailoctopus/emailoctopus-plans-pricing/)
 
-List, create, rename, and delete the tags used to segment contacts within a list.
+#### Rate limits (1)
 
-- **Human URL:** [https://emailoctopus.com/api-documentation/lists](https://emailoctopus.com/api-documentation/lists)
-- **Base URL:** `https://api.emailoctopus.com`
+Published request limits.
 
-#### Tags
+- [Emailoctopus Rate Limits](https://apis.io/rate-limits/emailoctopus/emailoctopus-rate-limits/)
 
-- Tags
-- Segmentation
-- Lists
+#### FinOps (1)
 
-#### Properties
+What the API costs to run, by operation.
 
-- [Documentation](https://emailoctopus.com/api-documentation/lists)
-- [API Reference](https://emailoctopus.com/api-documentation)
-- [OpenAPI](openapi/emailoctopus-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/emailoctopus.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/emailoctopus.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Emailoctopus Finops](https://apis.io/finops/emailoctopus/emailoctopus-finops/)
 
-### EmailOctopus Automations API
+## Where to find this API
 
-Start (queue) an automation workflow for a specific contact on a list.
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-- **Human URL:** [https://emailoctopus.com/api-documentation/automations/queue](https://emailoctopus.com/api-documentation/automations/queue)
-- **Base URL:** `https://api.emailoctopus.com`
-
-#### Tags
-
-- Automations
-- Workflows
-- Triggers
-
-#### Properties
-
-- [Documentation](https://emailoctopus.com/api-documentation/automations/queue)
-- [API Reference](https://emailoctopus.com/api-documentation)
-- [OpenAPI](openapi/emailoctopus-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/emailoctopus.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/emailoctopus.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### EmailOctopus Reports API
-
-Pull campaign performance data - summary statistics, per-link click reports, and per-contact activity reports (sent, opened, clicked, bounced, complained, unsubscribed).
-
-- **Human URL:** [https://emailoctopus.com/api-documentation/campaigns](https://emailoctopus.com/api-documentation/campaigns)
-- **Base URL:** `https://api.emailoctopus.com`
-
-#### Tags
-
-- Reports
-- Analytics
-- Campaigns
-
-#### Properties
-
-- [Documentation](https://emailoctopus.com/api-documentation/campaigns)
-- [API Reference](https://emailoctopus.com/api-documentation)
-- [OpenAPI](openapi/emailoctopus-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/emailoctopus.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/emailoctopus.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-## Common Properties
-
-- [LinkedIn](https://www.linkedin.com/company/emailoctopus)
 - [Website](https://emailoctopus.com)
-- [Documentation](https://emailoctopus.com/api-documentation)
-- [Plans](plans/emailoctopus-plans-pricing.yml)
-- [Rate Limits](rate-limits/emailoctopus-rate-limits.yml)
-- [Fin Ops](finops/emailoctopus-finops.yml)
+- [Documentation](https://emailoctopus.com/api-documentation/v2)
+- [Getting started](https://emailoctopus.com/api-documentation/v2#section/Authentication)
+- [API reference](https://emailoctopus.com/api-documentation/v2)
+- [Pricing](https://emailoctopus.com/pricing)
+- [Sign up](https://emailoctopus.com/account/sign-up)
+- [Support](https://help.emailoctopus.com)
+- [Blog](https://emailoctopus.com/blog)
+- [Terms of service](https://emailoctopus.com/legal/terms)
+- [Privacy policy](https://emailoctopus.com/legal/privacy)
+- [Status](https://status.emailoctopus.com)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 57.3** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 59.4 |
+| Contract governance | 4.5 |
+| Operational transparency | 55.3 |
+| Developer ergonomics | 50.6 |
+| Access clarity | 76.3 |
+
+**Agent readiness 34.9** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 20.8** — Telecommunications
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/emailoctopus/](https://apis.io/providers/emailoctopus/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for EmailOctopus: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/emailoctopus/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
